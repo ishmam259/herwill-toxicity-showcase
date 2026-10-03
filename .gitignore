@@ -1,0 +1,20 @@
+# Competition data must never be committed (competition rules)
+*.csv
+!data/examples*.csv
+# Model weights
+*.safetensors
+*.bin
+*.onnx
+*.pt
+model/
+# Secrets
+*.env
+kaggle.json
+# Python / Node
+__pycache__/
+.venv/
+node_modules/
+dist/
+.pytest_cache/
+playwright-report/
+test-results/
