@@ -40,6 +40,12 @@ def export(args):
         raise ValueError(
             "Validation text overlaps training; parity score would be invalid"
         )
+    if args.max_rows and len(val) > args.max_rows:
+        # Stratified sample: full-size fp32 XLM-R-large on a CPU is far too slow for ~10k posts x 3 passes.
+        frac = args.max_rows / len(val)
+        val = pd.concat([g.sample(n=max(1, round(frac * len(g))), random_state=0) for _, g in val.groupby("y")])
+    # Sort by length so each batch pads to similar lengths (much less wasted CPU work).
+    val = val.assign(_n=val.text.str.len()).sort_values("_n").drop(columns="_n").reset_index(drop=True)
     tokenizer = AutoTokenizer.from_pretrained(args.model, local_files_only=True)
     original = (
         AutoModelForSequenceClassification.from_pretrained(
@@ -117,5 +123,6 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, required=True)
     p.add_argument("--validation", type=Path, required=True)
+    p.add_argument("--max-rows", type=int, default=2000, help="stratified held-out sample for the CPU parity check (0 = all)")
     p.add_argument("--output", type=Path, default=ROOT / "model/transformer-int8")
     export(p.parse_args())
