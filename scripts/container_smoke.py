@@ -12,6 +12,8 @@ from pathlib import Path
 
 assert not Path("/app/private").exists(), "Private exports entered the image"
 assert not Path("/app/model").exists(), "Competition weights entered the image"
+assert not Path("/app/backend/model").exists(), "Competition weights entered the image"
+assert not Path("/app/backend/.venv").exists(), "A local virtualenv entered the image"
 assert {p.name for p in Path("/app/data").iterdir()} == {
     "models.json",
     "calibration.json",
@@ -75,7 +77,7 @@ try:
     )
     result = json.load(urllib.request.urlopen(request, timeout=10))
     assert result["models"][0]["label"] in [0, 1, 2]
-    assert abs(sum(result["models"][0]["probs"]) - 1) < 1e-8
+    assert abs(sum(result["models"][0]["probs"]) - 1) < 1e-3  # API rounds to 4 decimals
     print(
         "Container verified: compiled routes, inference, private denial, public allowlist, no private data or fitted weights."
     )
