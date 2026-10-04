@@ -98,10 +98,15 @@ with Ishmam and Obidit.
       submission, private 0.633) or say why V3.7 is better for the pages.
 - [x] Add **V1.3avg (MuRIL)** (moved to Farhan, 4 Oct; done: 0.5613) to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
 - [x] Update `docs/VERIFICATION.md` (moved to Farhan, 4 Oct; done: export and backend rows; browser suite not re-run) after the merge (19 API tests + 20 browser tests now; see the commit).
-- [ ] **Train the deployable transformer** (moved to Farhan, 4 Oct; in progress: XLM-R-large on the `farhantahsinkhan` Kaggle GPU, `kaggle/deployable-transformer/`. Pipeline verified end to end locally with a tiny model (train → int8 export → reload → API). When the kernel finishes: `python scripts/fetch_transformer.py`, then serve with `TRANSFORMER_MODEL_PATH=model/transformer-int8`. Hosting note for Ishmam: int8 XLM-R-large is ~550–600 MB, above Render free's 512 MB RAM; HF Spaces CPU fits) with
-      `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
-      Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
-      (verdict and word weights), and TF-IDF stays as the second vote.
+- [x] **Train the deployable transformer** (Farhan, done 4 Oct): XLM-R-large, 3 epochs, LR 1e-5, one T4
+      (`kaggle/deployable-transformer-v6/`). Duplicate-grouped 20% held-out macro F1 **0.586** (epochs: 0.554, 0.579, 0.586).
+      This is a new recipe; never label it with a historical V2.x CV score. int8 export via `scripts/export_cpu.py`
+      (gate: macro F1 drop < 0.005, reload check); the exact int8 numbers are in `model/transformer-int8/showcase.json`.
+- [ ] **Ishmam: build and deploy with the transformer.** Farhan sends `transformer-int8.zip` (weights are not in git).
+      Unzip it so the files sit in `model/transformer-int8/` (`int8_state.pt`, `config.json`, tokenizer files, `showcase.json`),
+      install `backend/requirements-transformer.txt`, and run the back end with `TRANSFORMER_MODEL_PATH=model/transformer-int8`:
+      it becomes the primary Live Demo model and TF-IDF stays as the second vote. Hosting: int8 XLM-R-large needs ~600 MB RAM,
+      above Render free's 512 MB; use HF Spaces CPU (upload the folder to the Space, not to GitHub).
 
 
 ## Obidit: shipping (updated 4 Oct)

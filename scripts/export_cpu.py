@@ -52,21 +52,32 @@ def export(args):
         copy.deepcopy(original), {torch.nn.Linear}, dtype=torch.qint8
     )
 
-    def run(model):
-        predictions = []
-        latencies = []
-        with torch.inference_mode():
-            for text in val.text:
-                start = time.perf_counter()
-                inputs = tokenizer(
-                    text, return_tensors="pt", truncation=True, max_length=256
-                )
-                predictions.append(int(model(**inputs).logits.argmax(-1).item()))
-                latencies.append((time.perf_counter() - start) * 1000)
-        return predictions, latencies
+    texts = val.text.tolist()
 
-    a, _ = run(original)
-    b, latency = run(quantized)
+    def run(model, batch_size=32):
+        # Same batching, padding and order as TransformerPredictor.predict_proba, so the reload
+        # check below compares like with like (dynamic int8 depends on the padded batch).
+        predictions = []
+        with torch.inference_mode():
+            for i in range(0, len(texts), batch_size):
+                enc = tokenizer(texts[i:i + batch_size], truncation=True, max_length=256,
+                                padding=True, return_tensors="pt")
+                predictions.extend(model(**enc).logits.argmax(-1).tolist())
+        return predictions
+
+    def latency_ms(model, n=200):
+        # Sequential single-post latency, as the Live Demo serves it.
+        out = []
+        with torch.inference_mode():
+            for text in texts[:n]:
+                start = time.perf_counter()
+                model(**tokenizer(text, return_tensors="pt", truncation=True, max_length=256))
+                out.append((time.perf_counter() - start) * 1000)
+        return out
+
+    a = run(original)
+    b = run(quantized)
+    latency = latency_ms(quantized)
     macro = lambda pred: float(
         f1_score(val.y, pred, labels=[0, 1, 2], average="macro", zero_division=0)
     )
@@ -88,7 +99,7 @@ def export(args):
             "drop": fa - fb,
             "latency_p50_ms": float(np.percentile(latency, 50)),
             "latency_p95_ms": float(np.percentile(latency, 95)),
-            "latency_note": "CPU, sequential single-post inference including tokenization; first-run effects included",
+            "latency_note": "CPU, sequential single-post inference including tokenization, first 200 validation posts; first-run effects included",
         },
     }
     (args.output / "showcase.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -96,7 +107,7 @@ def export(args):
 
     loaded = TransformerPredictor(args.output)
     # Compare every validation decision after reload, not just one sample.
-    reload_pred = [int(loaded.predict_proba([text])[0].argmax()) for text in val.text]
+    reload_pred = loaded.predict_proba(texts).argmax(1).tolist()
     if reload_pred != b:
         raise ValueError("Reloaded int8 decisions differ")
     print(json.dumps(metadata["quantization_check"], indent=2))

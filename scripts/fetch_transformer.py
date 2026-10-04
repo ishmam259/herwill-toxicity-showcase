@@ -2,7 +2,7 @@
 
 Run from the repo root once the kernel (kaggle/deployable-transformer/) has finished:
 
-    set -a; source <path>/kaggle.env; set +a      # your own Kaggle token, never committed
+    set -a; source <path>/nasin.env; set +a      # token of the account that ran V6, never committed
     python scripts/fetch_transformer.py
 
 Steps: download the kernel output to a temporary folder, check the quality gates, copy ONLY the
@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-KERNEL = "farhantahsinkhan/herwill-showcase-xlmr-large"
+KERNEL = "nasreenakhter229/herwill-showcase-xlmr-large-export"  # V6 stage 2 output
 REQUIRED = ["config.json", "int8_state.pt", "showcase.json", "tokenizer.json", "tokenizer_config.json"]
 
 

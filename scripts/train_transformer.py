@@ -36,6 +36,7 @@ def train(args):
         AutoTokenizer,
         DataCollatorWithPadding,
         Trainer,
+        TrainerCallback,
         TrainingArguments,
         set_seed,
     )
@@ -113,12 +114,23 @@ def train(args):
         report_to="none",
         seed=args.seed,
     )
+    class CollapseGuard(TrainerCallback):
+        # A collapsed run predicts the class prior (macro F1 ~0.22) and never recovers; stop early.
+        def on_evaluate(self, targs, state, control, metrics=None, **kwargs):
+            f1 = (metrics or {}).get("eval_macro_f1")
+            if args.abort_below and f1 is not None and f1 < args.abort_below:
+                # Marker tells the kernel not to retry a collapse (only a crash is worth retrying).
+                args.output.mkdir(parents=True, exist_ok=True)
+                (args.output / "COLLAPSED").write_text(f"{f1}\n")
+                raise RuntimeError(f"Held-out macro F1 {f1:.4f} < {args.abort_below} at epoch {state.epoch:.2f}: collapsed")
+
     trainer = Trainer(
         model=model,
         args=training,
         train_dataset=Posts(fit),
         eval_dataset=Posts(val) if len(val) else None,
         processing_class=tokenizer,
+        callbacks=[CollapseGuard()],
         data_collator=DataCollatorWithPadding(tokenizer),
         compute_metrics=lambda ev: {
             "macro_f1": float(
@@ -133,9 +145,11 @@ def train(args):
         },
     )
     trainer.train()
-    trainer.save_model(str(args.output))
+    trainer.save_model(str(args.output))  # rank-0 only under torchrun
+    metrics = trainer.evaluate() if len(val) else None  # collective: every rank must call it
+    if not trainer.is_world_process_zero():
+        return
     tokenizer.save_pretrained(args.output)
-    metrics = trainer.evaluate() if len(val) else None
     metadata = {
         "id": "deployable-transformer",
         "name": f"{Path(args.base).name} · local fit",
@@ -180,6 +194,7 @@ if __name__ == "__main__":
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--lr", type=float, default=2e-5)
     p.add_argument("--warmup", type=float, default=0.1, help="warmup as a fraction of total steps")
+    p.add_argument("--abort-below", type=float, default=0.0, help="stop if any held-out eval macro F1 is below this")
     p.add_argument("--limit", type=int, default=0, help="use only the first N rows (pipeline smoke tests)")
     p.add_argument("--full-fit", action="store_true")
     p.add_argument("--download-base", action="store_true")

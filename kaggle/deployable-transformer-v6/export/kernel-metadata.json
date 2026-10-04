@@ -1,0 +1,15 @@
+{
+  "id": "nasreenakhter229/herwill-showcase-xlmr-large-export",
+  "title": "herwill-showcase-xlmr-large-export",
+  "code_file": "kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "competition_sources": [],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "nasreenakhter229/herwill-showcase-xlmr-large-train"
+  ]
+}
