@@ -82,19 +82,13 @@ preserved separately; its API and metrics schemas differ from the active app.
 **Page**
 - [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 
-## Farhan: the LLM side of the results (updated 4 Oct)
+## Farhan: reviewer (updated 4 Oct)
 
-Obidit already built the shell and the Model comparison, Confusion matrices and Hard cases pages, so those
-are no longer Farhan's to build. Farhan now owns their **content** for the LLM models, and reviews them.
+Farhan's build work moved to Obidit. Farhan reviews instead, since Obidit can't review his own pages:
 
-- [ ] **Add the strongest LLMs** to `scripts/export_results.py`: today it has only V5.0 (Qwen2.5-7B). Add
-      V5.11 (region-tag Qwen2.5-7B, 0.640, best single model), V5.2avg (Qwen3-14B) and V5.3avg (Llama),
-      re-run it, and check the numbers against `RESULTS.md` in the competition repo.
-- [ ] **Hard cases, "only the LLMs get right":** it is defined with V5.0 alone. Decide which LLM(s) it
-      should use (probably V5.11) and update the definition and its test (`test_private_export_vote_definitions`).
-- [ ] **Review** Obidit's three results pages (wording, numbers, what the LLM rows say) and the 4 Oct merge
-      that made Ishmam's back end and Live Demo the active ones. Leave comments or push fixes.
-- [ ] Keep the private rule: Hard cases stays local; never commit `private/`.
+- [ ] **Review** Obidit's results pages (wording, numbers, what the LLM rows say) and the 4 Oct merge that
+      made Ishmam's back end and Live Demo the active ones. Leave comments or push fixes.
+- [ ] Check the LLM numbers Obidit adds against your own runs in the competition repo (`Kernels/V5.*/preds`).
 
 ## Obidit: the demo model, permission and shipping (updated 4 Oct)
 
@@ -114,6 +108,13 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 - [ ] **Text ensemble:** `scripts/export_results.py` uses V3.7; switch it to **V3.11i** (our final text-only
       submission, private 0.633) or say why V3.7 is better for the pages.
 - [ ] Add **V1.3avg (MuRIL)** to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
+- [ ] **Add the strongest LLMs** (moved from Farhan) to `scripts/export_results.py`: today it has only V5.0
+      (Qwen2.5-7B). Add V5.11 (region-tag Qwen2.5-7B, 0.640, best single model), V5.2avg (Qwen3-14B) and
+      V5.3avg (Llama) from `Kernels/V5.*/preds` in the competition repo, re-run it, and check the numbers
+      against `RESULTS.md` there.
+- [ ] **Hard cases, "only the LLMs get right"** (moved from Farhan): it is defined with V5.0 alone. Decide
+      which LLM(s) it should use (probably V5.11) and update the definition and its test
+      (`test_private_export_vote_definitions`). Hard cases stays local; never commit `private/`.
 - [ ] **Re-record the walkthrough video**: the old one shows the removed Live Demo.
 - [ ] Update `docs/VERIFICATION.md` after the merge (19 API tests + 20 browser tests now; see the commit).
 - [ ] After O1 says yes: deploy (Render or HF Spaces) and run the GitHub Actions checks.
@@ -131,4 +132,4 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 
 Handoff points (4 Oct): Ishmam's back end serves Obidit's transformer once it is trained; until then it serves
 TF-IDF (the local full-data model on a teammate's machine, the authored-example model in public builds).
-Farhan's LLM exports feed Obidit's results pages through `scripts/export_results.py`.
+Obidit adds the LLM exports to the results pages through `scripts/export_results.py`; Farhan reviews.
