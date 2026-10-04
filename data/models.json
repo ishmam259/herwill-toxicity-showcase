@@ -1,0 +1,763 @@
+[
+ {
+  "id": "V0.0",
+  "name": "TF-IDF + logistic regression",
+  "family": "tfidf",
+  "owner": "Ishmam",
+  "coverage": 1.0,
+  "oof": {
+   "n": 47817,
+   "macro_f1": 0.5225,
+   "f1": {
+    "explicit": 0.6446,
+    "subtle": 0.5,
+    "neutral": 0.423
+   },
+   "confusion": [
+    [
+     15051,
+     7145,
+     1560
+    ],
+    [
+     6702,
+     9130,
+     2331
+    ],
+    [
+     1188,
+     2084,
+     2626
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.4456,
+    "f1": {
+     "explicit": 0.6772,
+     "subtle": 0.4151,
+     "neutral": 0.2443
+    },
+    "confusion": [
+     [
+      7990,
+      3093,
+      505
+     ],
+     [
+      3448,
+      2686,
+      502
+     ],
+     [
+      571,
+      525,
+      340
+     ]
+    ]
+   },
+   "latin": {
+    "n": 27614,
+    "macro_f1": 0.5441,
+    "f1": {
+     "explicit": 0.6071,
+     "subtle": 0.5493,
+     "neutral": 0.4759
+    },
+    "confusion": [
+     [
+      6786,
+      3979,
+      1050
+     ],
+     [
+      3144,
+      6393,
+      1821
+     ],
+     [
+      611,
+      1547,
+      2283
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.3866,
+    "f1": {
+     "explicit": 0.7503,
+     "subtle": 0.3094,
+     "neutral": 0.1
+    },
+    "confusion": [
+     [
+      269,
+      68,
+      2
+     ],
+     [
+      104,
+      41,
+      7
+     ],
+     [
+      5,
+      4,
+      1
+     ]
+    ]
+   }
+  }
+ },
+ {
+  "id": "V1.2avg",
+  "name": "BanglaBERT (3-seed avg)",
+  "family": "encoder",
+  "owner": "Ishmam",
+  "coverage": 0.422,
+  "oof": {
+   "n": 20178,
+   "macro_f1": 0.5045,
+   "f1": {
+    "explicit": 0.6952,
+    "subtle": 0.4629,
+    "neutral": 0.3554
+   },
+   "confusion": [
+    [
+     8174,
+     3381,
+     385
+    ],
+    [
+     3076,
+     3252,
+     463
+    ],
+    [
+     324,
+     627,
+     496
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.5038,
+    "f1": {
+     "explicit": 0.6914,
+     "subtle": 0.4637,
+     "neutral": 0.3563
+    },
+    "confusion": [
+     [
+      7866,
+      3339,
+      383
+     ],
+     [
+      2978,
+      3198,
+      460
+     ],
+     [
+      321,
+      621,
+      494
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.4903,
+    "f1": {
+     "explicit": 0.8098,
+     "subtle": 0.4257,
+     "neutral": 0.2353
+    },
+    "confusion": [
+     [
+      298,
+      39,
+      2
+     ],
+     [
+      96,
+      53,
+      3
+     ],
+     [
+      3,
+      5,
+      2
+     ]
+    ]
+   }
+  },
+  "members": [
+   "ishmamtahmid/herwill-v1-2-banglabert (official V1.2)",
+   "ishmamahmid/uap-datathon-muril (V1.2 code rerun)",
+   "ishmamahmid/uap-datathon-xlmr-large-s2 (V1.2 code rerun)"
+  ]
+ },
+ {
+  "id": "V1.3avg",
+  "name": "MuRIL (2-seed avg)",
+  "family": "encoder",
+  "owner": "Ishmam",
+  "coverage": 1.0,
+  "oof": {
+   "n": 47817,
+   "macro_f1": 0.5613,
+   "f1": {
+    "explicit": 0.682,
+    "subtle": 0.5098,
+    "neutral": 0.492
+   },
+   "confusion": [
+    [
+     16089,
+     6672,
+     995
+    ],
+    [
+     6576,
+     9220,
+     2367
+    ],
+    [
+     763,
+     2114,
+     3021
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.4921,
+    "f1": {
+     "explicit": 0.7147,
+     "subtle": 0.4348,
+     "neutral": 0.3268
+    },
+    "confusion": [
+     [
+      8643,
+      2654,
+      291
+     ],
+     [
+      3530,
+      2749,
+      357
+     ],
+     [
+      424,
+      605,
+      407
+     ]
+    ]
+   },
+   "latin": {
+    "n": 27614,
+    "macro_f1": 0.5763,
+    "f1": {
+     "explicit": 0.642,
+     "subtle": 0.5522,
+     "neutral": 0.5348
+    },
+    "confusion": [
+     [
+      7128,
+      3987,
+      700
+     ],
+     [
+      2928,
+      6423,
+      2007
+     ],
+     [
+      335,
+      1497,
+      2609
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.4859,
+    "f1": {
+     "explicit": 0.8181,
+     "subtle": 0.3062,
+     "neutral": 0.3333
+    },
+    "confusion": [
+     [
+      317,
+      20,
+      2
+     ],
+     [
+      117,
+      32,
+      3
+     ],
+     [
+      2,
+      5,
+      3
+     ]
+    ]
+   }
+  },
+  "members": [
+   "V1.3 (seed 42)",
+   "V1.3s2 (seed 2026), folds 0,1,2,4 only"
+  ]
+ },
+ {
+  "id": "V1.7",
+  "name": "BanglaBERT-large",
+  "family": "encoder",
+  "owner": "Ishmam",
+  "coverage": 0.422,
+  "oof": {
+   "n": 20178,
+   "macro_f1": 0.4895,
+   "f1": {
+    "explicit": 0.6728,
+    "subtle": 0.4542,
+    "neutral": 0.3416
+   },
+   "confusion": [
+    [
+     7642,
+     3834,
+     464
+    ],
+    [
+     2853,
+     3310,
+     628
+    ],
+    [
+     283,
+     641,
+     523
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.4884,
+    "f1": {
+     "explicit": 0.6685,
+     "subtle": 0.4558,
+     "neutral": 0.3409
+    },
+    "confusion": [
+     [
+      7341,
+      3784,
+      463
+     ],
+     [
+      2751,
+      3263,
+      622
+     ],
+     [
+      282,
+      636,
+      518
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.5379,
+    "f1": {
+     "explicit": 0.794,
+     "subtle": 0.3651,
+     "neutral": 0.4545
+    },
+    "confusion": [
+     [
+      289,
+      49,
+      1
+     ],
+     [
+      100,
+      46,
+      6
+     ],
+     [
+      0,
+      5,
+      5
+     ]
+    ]
+   }
+  }
+ },
+ {
+  "id": "V1.9",
+  "name": "IndicBERT v2",
+  "family": "encoder",
+  "owner": "Ishmam",
+  "coverage": 1.0,
+  "oof": {
+   "n": 47817,
+   "macro_f1": 0.5688,
+   "f1": {
+    "explicit": 0.6838,
+    "subtle": 0.5197,
+    "neutral": 0.5028
+   },
+   "confusion": [
+    [
+     16267,
+     6255,
+     1234
+    ],
+    [
+     6662,
+     9221,
+     2280
+    ],
+    [
+     891,
+     1846,
+     3161
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.4975,
+    "f1": {
+     "explicit": 0.7151,
+     "subtle": 0.428,
+     "neutral": 0.3492
+    },
+    "confusion": [
+     [
+      8725,
+      2474,
+      389
+     ],
+     [
+      3612,
+      2613,
+      411
+     ],
+     [
+      476,
+      487,
+      473
+     ]
+    ]
+   },
+   "latin": {
+    "n": 27614,
+    "macro_f1": 0.587,
+    "f1": {
+     "explicit": 0.6456,
+     "subtle": 0.5702,
+     "neutral": 0.5452
+    },
+    "confusion": [
+     [
+      7225,
+      3749,
+      841
+     ],
+     [
+      2932,
+      6564,
+      1862
+     ],
+     [
+      411,
+      1353,
+      2677
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.4988,
+    "f1": {
+     "explicit": 0.8171,
+     "subtle": 0.3158,
+     "neutral": 0.3636
+    },
+    "confusion": [
+     [
+      315,
+      22,
+      2
+     ],
+     [
+      113,
+      33,
+      6
+     ],
+     [
+      4,
+      2,
+      4
+     ]
+    ]
+   }
+  }
+ },
+ {
+  "id": "V2.2avg",
+  "name": "XLM-R-large (2-seed avg)",
+  "family": "encoder",
+  "owner": "Ishmam",
+  "coverage": 1.0,
+  "oof": {
+   "n": 47817,
+   "macro_f1": 0.5839,
+   "f1": {
+    "explicit": 0.7031,
+    "subtle": 0.5185,
+    "neutral": 0.5302
+   },
+   "confusion": [
+    [
+     17294,
+     5510,
+     952
+    ],
+    [
+     7232,
+     8909,
+     2022
+    ],
+    [
+     915,
+     1783,
+     3200
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.4851,
+    "f1": {
+     "explicit": 0.7197,
+     "subtle": 0.3962,
+     "neutral": 0.3395
+    },
+    "confusion": [
+     [
+      9060,
+      2170,
+      358
+     ],
+     [
+      3982,
+      2286,
+      368
+     ],
+     [
+      547,
+      447,
+      442
+     ]
+    ]
+   },
+   "latin": {
+    "n": 27614,
+    "macro_f1": 0.6159,
+    "f1": {
+     "explicit": 0.6819,
+     "subtle": 0.5831,
+     "neutral": 0.5827
+    },
+    "confusion": [
+     [
+      7920,
+      3305,
+      590
+     ],
+     [
+      3128,
+      6582,
+      1648
+     ],
+     [
+      365,
+      1330,
+      2746
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.5504,
+    "f1": {
+     "explicit": 0.8068,
+     "subtle": 0.2991,
+     "neutral": 0.5455
+    },
+    "confusion": [
+     [
+      309,
+      29,
+      1
+     ],
+     [
+      115,
+      32,
+      5
+     ],
+     [
+      3,
+      1,
+      6
+     ]
+    ]
+   }
+  }
+ },
+ {
+  "id": "V3.11i",
+  "name": "Text-only ensemble (final)",
+  "family": "ensemble",
+  "owner": "Ishmam",
+  "public_lb": 0.61727,
+  "private_lb": 0.63275,
+  "coverage": 1.0,
+  "oof": {
+   "n": 47817,
+   "macro_f1": 0.6253,
+   "f1": {
+    "explicit": 0.7155,
+    "subtle": 0.5723,
+    "neutral": 0.5881
+   },
+   "confusion": [
+    [
+     17110,
+     5926,
+     720
+    ],
+    [
+     6275,
+     10392,
+     1496
+    ],
+    [
+     684,
+     1834,
+     3380
+    ]
+   ]
+  },
+  "by_script": {
+   "bangla": {
+    "n": 19660,
+    "macro_f1": 0.5252,
+    "f1": {
+     "explicit": 0.7258,
+     "subtle": 0.4576,
+     "neutral": 0.3922
+    },
+    "confusion": [
+     [
+      8775,
+      2534,
+      279
+     ],
+     [
+      3415,
+      2878,
+      343
+     ],
+     [
+      402,
+      532,
+      502
+     ]
+    ]
+   },
+   "latin": {
+    "n": 27614,
+    "macro_f1": 0.6606,
+    "f1": {
+     "explicit": 0.7014,
+     "subtle": 0.6361,
+     "neutral": 0.6443
+    },
+    "confusion": [
+     [
+      8009,
+      3368,
+      438
+     ],
+     [
+      2734,
+      7473,
+      1151
+     ],
+     [
+      279,
+      1296,
+      2866
+     ]
+    ]
+   },
+   "mixed": {
+    "n": 501,
+    "macro_f1": 0.516,
+    "f1": {
+     "explicit": 0.8123,
+     "subtle": 0.2913,
+     "neutral": 0.4444
+    },
+    "confusion": [
+     [
+      316,
+      21,
+      2
+     ],
+     [
+      120,
+      30,
+      2
+     ],
+     [
+      3,
+      3,
+      4
+     ]
+    ]
+   }
+  },
+  "members": [
+   "V0.0",
+   "V1.2avg",
+   "V1.7",
+   "V1.9",
+   "V2.2avg",
+   "V5.0",
+   "V5.3avg",
+   "V5.2"
+  ],
+  "cross_fitted_macro_f1": 0.6233
+ }
+]

@@ -34,21 +34,22 @@ quality (tests, accessibility) and shipping (deploy, README, demo video).
 
 | File / endpoint | Content | Producer |
 |---|---|---|
-| `data/models.json` | per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam + Farhan (own models) |
-| `data/oof_<model>.json` | per train row: idx, script, true label, probs[3], fold (text joined locally only, see the data rule) | Ishmam + Farhan (own models) |
+| `data/models.json` | committed; built by `scripts/export_models.py` (merges by id, so run it with your own `--registry`). Per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam + Farhan (own models) |
+| `data/oof_rows.json` | per train row (sorted by id): script, true label, fold. **Gitignored** (derived from labels) | Ishmam (done) |
+| `data/oof_<model>.json` | `{id, probs}`: probs[3] per row aligned to `oof_rows.json`, `null` where the model did not predict. **Gitignored** | Ishmam + Farhan (own models) |
 | `data/examples.json` | hand-written demo posts per class and script (safe to publish) | Obidit |
-| `POST /api/predict` | `{text}` → `{script, models:[{id, label, probs[3]}], tokens:[{text, weight}]}` | Ishmam |
+| `POST /api/predict` | `{text}` → `{text, script, primary, label, label_name, models:[{id, name, label, probs[3]}], tokens:[{text, start, end, weight}]}` (see `backend/README.md`) | Ishmam (done) |
 
 ---
 
 ## Ishmam: back end and the Live Demo
 
 **Back end**
-- [ ] FastAPI `/predict`: runs TF-IDF (instant) and Obidit's transformer, and returns each model's label and probabilities (per-model votes), the script (`text_utils.py`) and per-token importance (TF-IDF coefficients or integrated gradients).
-- [ ] Exporters in `App/scripts/` for the encoder, TF-IDF and V3.11i OOF predictions; their rows in `models.json`.
+- [x] FastAPI `/predict`: runs TF-IDF (instant) and Obidit's transformer, and returns each model's label and probabilities (per-model votes), the script (`text_utils.py`) and per-token importance (TF-IDF coefficients or integrated gradients).
+- [x] Exporters in `scripts/` for the encoder, TF-IDF and V3.11i OOF predictions; their rows in `models.json`.
 
 **Page**
-- [ ] **Live Demo**: text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
+- [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 
 ## Farhan: app shell and the results pages
 
