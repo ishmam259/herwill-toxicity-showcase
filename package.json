@@ -1,0 +1,23 @@
+{
+  "name": "herwill-toxicity-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace frontend",
+    "preview": "npm run preview --workspace frontend",
+    "typecheck": "npm run typecheck --workspace frontend",
+    "test:e2e": "playwright test",
+    "test:api": "python -m pytest tests -q",
+    "check:data": "python scripts/check_public_data.py",
+    "record:demo": "RECORD_DEMO=1 playwright test tests/demo.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@axe-core/playwright": "^4.11.1"
+  }
+}
