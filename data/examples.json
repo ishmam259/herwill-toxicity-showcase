@@ -1,0 +1,23 @@
+{
+  "provenance": "Original hand-written showcase examples; not competition posts. Intended labels illustrate concepts, not gold annotations.",
+  "examples": [
+    {"id":"en-exp-1","language":"English","label":0,"text":"You are an idiot. Shut up and stop wasting everyone's time."},
+    {"id":"en-exp-2","language":"English","label":0,"text":"Your nasty insults are disgusting. You are a pathetic bully."},
+    {"id":"en-sub-1","language":"English","label":1,"text":"How impressive. Another expert who clearly has no idea what they're talking about."},
+    {"id":"en-sub-2","language":"English","label":1,"text":"People like you should probably leave the thinking to someone else."},
+    {"id":"en-neu-1","language":"English","label":2,"text":"I disagree with this idea, but I appreciate you explaining your perspective."},
+    {"id":"en-neu-2","language":"English","label":2,"text":"Thanks for sharing the schedule. I'll join the discussion tomorrow."},
+    {"id":"bn-exp-1","language":"Bangla","label":0,"text":"তুই একটা বোকা। চুপ কর, তোর বাজে কথা কেউ শুনতে চায় না।"},
+    {"id":"bn-exp-2","language":"Bangla","label":0,"text":"তুমি একটা জঘন্য মানুষ। তোমার এই নোংরা অপমান বন্ধ করো।"},
+    {"id":"bn-sub-1","language":"Bangla","label":1,"text":"বাহ, কী অসাধারণ জ্ঞান! না জেনেও এত আত্মবিশ্বাস সবার থাকে না।"},
+    {"id":"bn-sub-2","language":"Bangla","label":1,"text":"আপনার মতো মানুষদের চিন্তার কাজটা অন্যদের ওপর ছেড়ে দেওয়াই ভালো।"},
+    {"id":"bn-neu-1","language":"Bangla","label":2,"text":"আমি এই মতের সঙ্গে একমত নই, তবে আপনার ব্যাখ্যার জন্য ধন্যবাদ।"},
+    {"id":"bn-neu-2","language":"Bangla","label":2,"text":"আজকের আলোচনা ভালো লেগেছে। আমরা আগামীকাল আবার দেখা করব।"},
+    {"id":"bl-exp-1","language":"Banglish","label":0,"text":"Tui ekta boka. Chup kor, tor faltu kotha keu shunte chay na."},
+    {"id":"bl-exp-2","language":"Banglish","label":0,"text":"Tumi ekta joghonno manush. Ei nongra opoman bondho koro."},
+    {"id":"bl-sub-1","language":"Banglish","label":1,"text":"Bah, ki oshadharon gyan! Na jene eto confidence shobar thake na."},
+    {"id":"bl-sub-2","language":"Banglish","label":1,"text":"Tomar moto manusher chintar kaj onno der upor chere dewai bhalo."},
+    {"id":"bl-neu-1","language":"Banglish","label":2,"text":"Ami ei moter shathe ekmot noi, tobe tomar explanation er jonno dhonnobad."},
+    {"id":"bl-neu-2","language":"Banglish","label":2,"text":"Ajker discussion bhalo legeche. Kal abar dekha hobe."}
+  ]
+}

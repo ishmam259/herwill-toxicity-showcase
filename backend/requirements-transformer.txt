@@ -1,0 +1,6 @@
+-r requirements.txt
+# Optional training/serving dependencies; the default CPU app does not need these.
+torch>=2.6,<3
+transformers>=4.48,<5
+accelerate>=1.2,<2
+pandas>=2.3,<4

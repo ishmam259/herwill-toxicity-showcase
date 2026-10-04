@@ -18,3 +18,16 @@ dist/
 .pytest_cache/
 playwright-report/
 test-results/
+# Private exports and fitted estimators must never ship as public assets
+private/
+*.npy
+*.joblib
+*.pkl
+*.webm
+*.mp4
+coverage/
+.env.*
+!.env.example
+# Generated screenshots and verification captures
+output/
+.ruff_cache/
