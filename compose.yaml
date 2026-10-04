@@ -1,0 +1,8 @@
+services:
+  showcase:
+    build: .
+    ports: ["7860:7860"]
+    environment:
+      PUBLIC_DEPLOYMENT: "1"
+      ENABLE_PRIVATE_CASES: "0"
+    restart: unless-stopped

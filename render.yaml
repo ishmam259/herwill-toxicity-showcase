@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: herwill-toxicity-showcase
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: PUBLIC_DEPLOYMENT
+        value: "1"
+      - key: ENABLE_PRIVATE_CASES
+        value: "0"
