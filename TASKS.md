@@ -1,3 +1,29 @@
+# Build status · 4 October 2026
+
+The software scaffold has been implemented. The original team plan is preserved below as historical context; its unchecked items are not a statement that the shipped pages are absent.
+
+| Deliverable | Status |
+|---|---|
+| React/Vite shell, responsive layout, routes, class tokens | Complete |
+| Frozen contracts and product specification | Complete — `docs/SPEC.md` |
+| FastAPI classifier, script badges, probabilities, model votes, token highlighting | Complete — authored fallback and saved full-fit local TF-IDF |
+| 18 original examples across Bangla, Banglish, English × three classes | Complete |
+| Verified encoder, TF-IDF, Qwen and text-ensemble aggregate exporters | Complete — 7 models; hash, alignment, coverage and ensemble checks |
+| Model comparison and script slices | Complete |
+| Confusion matrices, normalization and Explicit/Subtle emphasis | Complete |
+| Reliability curves, ECE/Brier and exact interactive offset grid | Complete |
+| Private Hard cases exporter, collections and local access gate | Complete — ignored and excluded from public builds |
+| Local full-data CPU TF-IDF weights | Complete — 47,817 rows; saved and reload-verified |
+| Optional transformer training, saved-checkpoint serving and int8 quality-gated exporter | Implemented; GPU training and held-out quality check not executed |
+| Backend, desktop/mobile smoke and accessibility tests | Implemented; see `docs/VERIFICATION.md` for executed results |
+| Docker, Compose, HF Spaces metadata, Render config and CI | Complete; local Docker build checked; external CI/deploy not triggered |
+| README and public-only walkthrough recording | Complete; see README for commands |
+| Organizer permission (O1), public deployment, teammate PR review | External work pending; no permission, deployment or review is claimed |
+
+The task to save and shrink a deployable **transformer** remains pending suitable compute and unseen validation data. The new training recipe is explicitly identified and must not inherit a historical CV score. Public trained-model reuse and dataset display remain pending organizer permission. No messages have been sent to organizers and no competition data has been published.
+
+---
+
 # Showcase app: task split (Ishmam / Farhan / Obidit)
 
 Goal: a web app that shows what our toxicity models can do on Bangla, Banglish and English posts
