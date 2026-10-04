@@ -1,4 +1,4 @@
-"""Export verified historical artifacts into text-free public aggregates.
+﻿"""Export verified historical artifacts into text-free public aggregates.
 
 Run with --workspace pointing to the surrounding datathon workspace. Only the
 explicit --private flag produces row-level text, outside all public paths.
@@ -23,6 +23,16 @@ MEMBERS = {
     "V2.2avg": ("XLM-R Large · seed average", "encoder", False),
     "V5.0": ("Qwen 2.5 7B · LoRA", "llm", False),
 }
+# Stronger LLM members read directly from the competition repo (not in the hashed bundle).
+# Row order matches the bundle: Kernels/V5.0 preds are identical to members/V5.0.
+EXTRA_LLMS = {
+    "V5.11": ("Qwen 2.5 7B · region tag · LoRA", "V5.11_qwen25-7b-region"),
+    "V5.2avg": ("Qwen 3 14B · seed average", "V5.2avg_qwen3-14b-2seed"),
+    "V5.3avg": ("Llama 3.1 8B · seed average", "V5.3avg_llama31-8b-2seed"),
+}
+LLM_IDS = {"V5.0", *EXTRA_LLMS}
+# "llm-only" hard cases: the best single LLM is right and every non-LLM member is wrong.
+HARD_CASE_LLM = "V5.11"
 OFFSETS = np.round(np.linspace(-0.5, 0.5, 21), 2)
 WARNING = "Historical, adaptively inspected out-of-fold predictions. These diagnostics are not a fresh held-out evaluation. Specialist models cover Bangla-containing posts only; overall scores with different coverage are not directly comparable."
 
@@ -109,6 +119,15 @@ def export(workspace, output, private=False):
         if (p[covered] < 0).any() or not np.allclose(p[covered].sum(1), 1, atol=1e-5):
             raise ValueError(f"Invalid probability simplex: {name}")
         arrays[name], sources[name] = p.astype(float), sha(path)
+    kernels = workspace / "repository/UAP-Datathon/Kernels"
+    for name, (_, folder) in EXTRA_LLMS.items():
+        path = kernels / folder / "preds/oof_probs.npy"
+        p = np.load(path, allow_pickle=False)
+        if p.shape != (len(y), 3) or not np.isfinite(p).all():
+            raise ValueError(f"Shape or coverage mismatch: {name}")
+        if (p < 0).any() or not np.allclose(p.sum(1), 1, atol=1e-5):
+            raise ValueError(f"Invalid probability simplex: {name}")
+        arrays[name], sources[name] = p.astype(float), sha(path)
     ensemble = np.zeros((len(y), 3))
     weights = {
         "B": {
@@ -132,7 +151,10 @@ def export(workspace, output, private=False):
         raise ValueError("Text ensemble differs from saved V3.7")
     arrays["V3.7"] = ensemble
     sources["V3.7"] = sha(reference)
-    catalog = {**MEMBERS, "V3.7": ("Text ensemble · S4", "ensemble", False)}
+    catalog = {
+        **MEMBERS,
+        **{n: (title, "llm", False) for n, (title, _) in EXTRA_LLMS.items()},
+        "V3.7": ("Text ensemble · S4", "ensemble", False)}
     models, calibration = [], {}
     for name, (title, family, specialist) in catalog.items():
         p = arrays[name]
@@ -200,9 +222,9 @@ def export(workspace, output, private=False):
         non_llm_wrong = np.ones(len(y), bool)
         for n, v in votes.items():
             all_wrong &= v != y
-            if n != "V5.0" and n != "V3.7":
+            if n not in LLM_IDS and n != "V3.7":
                 non_llm_wrong &= v != y
-        llm_only = (votes["V5.0"] == y) & non_llm_wrong
+        llm_only = (votes[HARD_CASE_LLM] == y) & non_llm_wrong
         for category, keep in [("all-wrong", all_wrong), ("llm-only", llm_only)]:
             for i in np.flatnonzero(keep)[:40]:
                 rows.append(
@@ -233,7 +255,8 @@ def export(workspace, output, private=False):
 def write(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+        json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
     )
 
 

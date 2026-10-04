@@ -25,7 +25,7 @@ The task to save and shrink a deployable **transformer** remains pending suitabl
 
 ---
 
-# Showcase app: task split (Ishmam / Obidit; Farhan not involved)
+# Showcase app: task split (Ishmam / Farhan / Obidit)
 
 Goal: a web app that shows what our toxicity models can do on Bangla, Banglish and English posts
 (0 = Explicit, 1 = Subtle, 2 = Neutral).
@@ -84,8 +84,17 @@ preserved separately; its API and metrics schemas differ from the active app.
 
 ## Farhan (updated 4 Oct)
 
-No tasks: Farhan is not working on the app. His build work moved to Obidit, and reviews are done by
-Ishmam and Obidit (each reviews the other).
+Farhan is back on the app (his earlier GitHub issues are fixed). His LLM tasks return to him; reviews stay
+with Ishmam and Obidit.
+
+- [x] **Add the strongest LLMs** (back with Farhan, 4 Oct; done: 10 models exported, V5.11 0.6400 and V5.2avg 0.6123 match RESULTS/EXPERIMENTS) to `scripts/export_results.py`: today it has only V5.0
+      (Qwen2.5-7B). Add V5.11 (region-tag Qwen2.5-7B, 0.640, best single model), V5.2avg (Qwen3-14B) and
+      V5.3avg (Llama) from `Kernels/V5.*/preds` in the competition repo, re-run it, and check the numbers
+      against `RESULTS.md` there.
+- [x] **Hard cases, "only the LLMs get right"** (back with Farhan, 4 Oct; done: defined with V5.11, test updated): it is defined with V5.0 alone. Decide
+      which LLM(s) it should use (probably V5.11) and update the definition and its test
+      (`test_private_export_vote_definitions`). Hard cases stays local; never commit `private/`.
+
 
 ## Obidit: the demo model, permission and shipping (updated 4 Oct)
 
@@ -105,13 +114,6 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 - [ ] **Text ensemble:** `scripts/export_results.py` uses V3.7; switch it to **V3.11i** (our final text-only
       submission, private 0.633) or say why V3.7 is better for the pages.
 - [ ] Add **V1.3avg (MuRIL)** to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
-- [ ] **Add the strongest LLMs** (moved from Farhan) to `scripts/export_results.py`: today it has only V5.0
-      (Qwen2.5-7B). Add V5.11 (region-tag Qwen2.5-7B, 0.640, best single model), V5.2avg (Qwen3-14B) and
-      V5.3avg (Llama) from `Kernels/V5.*/preds` in the competition repo, re-run it, and check the numbers
-      against `RESULTS.md` there.
-- [ ] **Hard cases, "only the LLMs get right"** (moved from Farhan): it is defined with V5.0 alone. Decide
-      which LLM(s) it should use (probably V5.11) and update the definition and its test
-      (`test_private_export_vote_definitions`). Hard cases stays local; never commit `private/`.
 - [ ] **Re-record the walkthrough video**: the old one shows the removed Live Demo.
 - [ ] Update `docs/VERIFICATION.md` after the merge (19 API tests + 20 browser tests now; see the commit).
 - [ ] After O1 says yes: deploy (Render or HF Spaces) and run the GitHub Actions checks.

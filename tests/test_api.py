@@ -141,8 +141,10 @@ def test_private_export_vote_definitions():
         if case["category"] == "all-wrong":
             assert all(v is None or v != label for v in votes.values())
         else:
-            assert votes["V5.0"] == label
-            assert all(v is None or v != label for name, v in votes.items() if name not in {"V5.0", "V3.7"})
+            # V5.11 (best single LLM) is right; every non-LLM member is wrong.
+            assert votes["V5.11"] == label
+            llms = {"V5.0", "V5.11", "V5.2avg", "V5.3avg", "V3.7"}
+            assert all(v is None or v != label for name, v in votes.items() if name not in llms)
     assert all(count <= 40 for count in counts.values())
 
 
