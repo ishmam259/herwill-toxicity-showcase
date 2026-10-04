@@ -81,6 +81,11 @@ preserved separately; its API and metrics schemas differ from the active app.
 **Page**
 - [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 - [ ] **Deploy** (moved to Ishmam, 4 Oct): Render or HF Spaces, then run the GitHub Actions checks.
+      Progress (4 Oct): int8 serving path verified end to end with a tiny stand-in XLM-R (loads as primary, word
+      weights and batching work). `scripts/prepare_space.py` builds a Space folder (`private/space/`, gitignored) with the
+      app, public data and `model/transformer-int8/`, CPU torch, `TRANSFORMER_MODEL_PATH` set; it refuses CSV/OOF/joblib files.
+      **Waiting on:** Farhan's `transformer-int8.zip`; the team's call on public use of a competition-trained model
+      (the organizer check was removed from the plan); Ishmam's Hugging Face login for the upload. Docker build not run locally (no Docker).
 
 ## Farhan (updated 4 Oct)
 
