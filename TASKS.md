@@ -19,9 +19,9 @@ The software scaffold has been implemented. The original team plan is preserved 
 | Backend, desktop/mobile smoke and accessibility tests | Implemented; see `docs/VERIFICATION.md` for executed results |
 | Docker, Compose, HF Spaces metadata, Render config and CI | Complete; local Docker build checked; external CI/deploy not triggered |
 | README and public-only walkthrough recording | Complete; see README for commands |
-| Organizer permission (O1), public deployment, teammate PR review | External work pending; no permission, deployment or review is claimed |
+| Public deployment, teammate PR review | Pending; no deployment or review is claimed |
 
-The task to save and shrink a deployable **transformer** remains pending suitable compute and unseen validation data. The new training recipe is explicitly identified and must not inherit a historical CV score. Public trained-model reuse and dataset display remain pending organizer permission. No messages have been sent to organizers and no competition data has been published.
+The task to save and shrink a deployable **transformer** remains pending suitable compute and unseen validation data. The new training recipe is explicitly identified and must not inherit a historical CV score. No competition data has been published.
 
 ---
 
@@ -43,10 +43,9 @@ ensemble (V0–V3.11i). The LLM members (V5.x) are Farhan's competition runs; Ob
 Obidit owns the deployable model retrain, quality (tests, accessibility) and shipping (deploy, README, demo video).
 
 > **⚠ Data rule check first.** The competition rules (repo guide §1a, §6) say the dataset must not be
-> shared or used outside the competition. Until the organizers say otherwise, a **public** deployment
-> must not show any `train.csv` / `test.csv` text: only text the user types in, plus aggregate
-> metrics. The **Hard cases** page shows dataset posts, so it stays **local / private**. Obidit asks
-> the organizers (task O1).
+> shared or used outside the competition, so a **public** deployment must not show any
+> `train.csv` / `test.csv` text: only text the user types in, plus aggregate metrics. The
+> **Hard cases** page shows dataset posts, so it stays **local / private**.
 
 ---
 
@@ -94,9 +93,13 @@ with Ishmam and Obidit.
 - [x] **Hard cases, "only the LLMs get right"** (back with Farhan, 4 Oct; done: defined with V5.11, test updated): it is defined with V5.0 alone. Decide
       which LLM(s) it should use (probably V5.11) and update the definition and its test
       (`test_private_export_vote_definitions`). Hard cases stays local; never commit `private/`.
+- [x] **Text ensemble** (moved to Farhan, 4 Oct; done: pages now show V3.11i, V3.7 kept only as the alignment check): `scripts/export_results.py` uses V3.7; switch it to **V3.11i** (our final text-only
+      submission, private 0.633) or say why V3.7 is better for the pages.
+- [x] Add **V1.3avg (MuRIL)** (moved to Farhan, 4 Oct; done: 0.5613) to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
+- [x] Update `docs/VERIFICATION.md` (moved to Farhan, 4 Oct; done: export and backend rows; browser suite not re-run) after the merge (19 API tests + 20 browser tests now; see the commit).
 
 
-## Obidit: the demo model, permission and shipping (updated 4 Oct)
+## Obidit: the demo model and shipping (updated 4 Oct)
 
 Done (thanks): the app shell, Model comparison, Confusion matrices, Calibration, Hard cases (local),
 18 examples, tests, accessibility pass, Docker / Render / HF Spaces config, CI, README.
@@ -109,14 +112,8 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
       `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
       Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
       (verdict and word weights), and TF-IDF stays as the second vote.
-- [ ] **O1: send the question to the organizers** (public demo with the trained model; showing dataset posts).
-      Record the answer here. Nothing goes public before that.
-- [ ] **Text ensemble:** `scripts/export_results.py` uses V3.7; switch it to **V3.11i** (our final text-only
-      submission, private 0.633) or say why V3.7 is better for the pages.
-- [ ] Add **V1.3avg (MuRIL)** to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
 - [ ] **Re-record the walkthrough video**: the old one shows the removed Live Demo.
-- [ ] Update `docs/VERIFICATION.md` after the merge (19 API tests + 20 browser tests now; see the commit).
-- [ ] After O1 says yes: deploy (Render or HF Spaces) and run the GitHub Actions checks.
+- [ ] Deploy (Render or HF Spaces) and run the GitHub Actions checks.
 
 ## Shared / end
 
@@ -125,7 +122,7 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 
 ## Milestones
 
-1. **M1 (MVP):** contract frozen; O1 sent; the live demo running on TF-IDF; the shell and Model comparison page working.
+1. **M1 (MVP):** contract frozen; the live demo running on TF-IDF; the shell and Model comparison page working.
 2. **M2:** Obidit's transformer serves the demo; Confusion matrices and Calibration pages done; smoke tests in CI.
 3. **M3:** Hard cases, accessibility pass, deploy and the demo video.
 

@@ -248,7 +248,7 @@ export function Comparison({ data }: { data: Results }) {
   );
 }
 export function Confusion({ data }: { data: Results }) {
-  const [id, setId] = useState("V3.7");
+  const [id, setId] = useState("V3.11i");
   const [group, setGroup] = useState("all");
   const [normalized, setNormalized] = useState(true);
   const model = data.models.find((m) => m.id === id)!;
@@ -430,7 +430,7 @@ export function Calibration({
   data: Results;
   calibration: CalibrationData;
 }) {
-  const [id, setId] = useState("V3.7");
+  const [id, setId] = useState("V3.11i");
   const [subtle, setSubtle] = useState(10);
   const [neutral, setNeutral] = useState(10);
   const cal = calibration.models[id];

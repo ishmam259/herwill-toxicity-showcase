@@ -143,7 +143,7 @@ def test_private_export_vote_definitions():
         else:
             # V5.11 (best single LLM) is right; every non-LLM member is wrong.
             assert votes["V5.11"] == label
-            llms = {"V5.0", "V5.11", "V5.2avg", "V5.3avg", "V3.7"}
+            llms = {"V5.0", "V5.11", "V5.2avg", "V5.3avg", "V3.11i"}
             assert all(v is None or v != label for name, v in votes.items() if name not in llms)
     assert all(count <= 40 for count in counts.values())
 

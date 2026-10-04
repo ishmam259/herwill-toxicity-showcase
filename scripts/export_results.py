@@ -23,14 +23,17 @@ MEMBERS = {
     "V2.2avg": ("XLM-R Large · seed average", "encoder", False),
     "V5.0": ("Qwen 2.5 7B · LoRA", "llm", False),
 }
-# Stronger LLM members read directly from the competition repo (not in the hashed bundle).
+# Extra members read directly from the competition repo (not in the hashed bundle).
 # Row order matches the bundle: Kernels/V5.0 preds are identical to members/V5.0.
-EXTRA_LLMS = {
-    "V5.11": ("Qwen 2.5 7B · region tag · LoRA", "V5.11_qwen25-7b-region"),
-    "V5.2avg": ("Qwen 3 14B · seed average", "V5.2avg_qwen3-14b-2seed"),
-    "V5.3avg": ("Llama 3.1 8B · seed average", "V5.3avg_llama31-8b-2seed"),
+EXTRA_MEMBERS = {
+    "V1.3avg": ("MuRIL · seed average", "encoder", "V1.3avg_muril-2seed"),
+    "V5.11": ("Qwen 2.5 7B · region tag · LoRA", "llm", "V5.11_qwen25-7b-region"),
+    "V5.2avg": ("Qwen 3 14B · seed average", "llm", "V5.2avg_qwen3-14b-2seed"),
+    "V5.3avg": ("Llama 3.1 8B · seed average", "llm", "V5.3avg_llama31-8b-2seed"),
 }
-LLM_IDS = {"V5.0", *EXTRA_LLMS}
+LLM_IDS = {"V5.0", *(n for n, (_, f, _) in EXTRA_MEMBERS.items() if f == "llm")}
+# Text ensemble shown on the pages: V3.11i, our final text-only submission (private 0.633).
+ENSEMBLE_ID, ENSEMBLE_KERNEL = "V3.11i", "V3.11i_ensemble"
 # "llm-only" hard cases: the best single LLM is right and every non-LLM member is wrong.
 HARD_CASE_LLM = "V5.11"
 OFFSETS = np.round(np.linspace(-0.5, 0.5, 21), 2)
@@ -120,7 +123,7 @@ def export(workspace, output, private=False):
             raise ValueError(f"Invalid probability simplex: {name}")
         arrays[name], sources[name] = p.astype(float), sha(path)
     kernels = workspace / "repository/UAP-Datathon/Kernels"
-    for name, (_, folder) in EXTRA_LLMS.items():
+    for name, (_, _, folder) in EXTRA_MEMBERS.items():
         path = kernels / folder / "preds/oof_probs.npy"
         p = np.load(path, allow_pickle=False)
         if p.shape != (len(y), 3) or not np.isfinite(p).all():
@@ -143,18 +146,22 @@ def export(workspace, output, private=False):
     for group, recipe in weights.items():
         mask = groups == group
         ensemble[mask] = sum(w * arrays[name][mask] for name, w in recipe.items())
-    # Independently confirm reconstruction against saved V3.7 probabilities.
+    # Alignment check: rebuild V3.7 from bundle members and compare to its saved probabilities.
     reference = (
         workspace / "repository/UAP-Datathon/Kernels/V3.7_ensemble/preds/oof_probs.npy"
     )
     if not np.allclose(ensemble, np.load(reference, allow_pickle=False), atol=1e-6):
         raise ValueError("Text ensemble differs from saved V3.7")
-    arrays["V3.7"] = ensemble
-    sources["V3.7"] = sha(reference)
+    # The pages show V3.11i (cross-fitted OOF probabilities saved by its kernel).
+    path = kernels / ENSEMBLE_KERNEL / "preds/oof_probs.npy"
+    p = np.load(path, allow_pickle=False)
+    if p.shape != (len(y), 3) or not np.isfinite(p).all():
+        raise ValueError(f"Shape or coverage mismatch: {ENSEMBLE_ID}")
+    arrays[ENSEMBLE_ID], sources[ENSEMBLE_ID] = p.astype(float), sha(path)
     catalog = {
         **MEMBERS,
-        **{n: (title, "llm", False) for n, (title, _) in EXTRA_LLMS.items()},
-        "V3.7": ("Text ensemble · S4", "ensemble", False)}
+        **{n: (title, family, False) for n, (title, family, _) in EXTRA_MEMBERS.items()},
+        ENSEMBLE_ID: ("Text ensemble · V3.11i", "ensemble", False)}
     models, calibration = [], {}
     for name, (title, family, specialist) in catalog.items():
         p = arrays[name]
@@ -222,7 +229,7 @@ def export(workspace, output, private=False):
         non_llm_wrong = np.ones(len(y), bool)
         for n, v in votes.items():
             all_wrong &= v != y
-            if n not in LLM_IDS and n != "V3.7":
+            if n not in LLM_IDS and n != ENSEMBLE_ID:
                 non_llm_wrong &= v != y
         llm_only = (votes[HARD_CASE_LLM] == y) & non_llm_wrong
         for category, keep in [("all-wrong", all_wrong), ("llm-only", llm_only)]:

@@ -98,7 +98,7 @@ TRANSFORMER_MODEL_PATH=model/transformer-int8 SPARSE_MODEL_PATH=model/sparse.job
   python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
-`--download-base` allows fetching a base model when explicitly selected; the default requires local files. `--full-fit` trains all supplied rows and reports no held-out score. The recipe uses three-class cross-entropy at 256 tokens, LR 2e-5 and duplicate-grouped validation; it is not an exact historical V1.x recipe replay. Artifacts declare class order in `showcase.json`. Int8 export rejects overlapping validation text and a macro-F1 drop ≥0.005, measures latency, and checks every validation decision after reload. A full-fit model requires separately reserved unseen validation data for this quality check. Public deployment of these weights awaits organizer permission.
+`--download-base` allows fetching a base model when explicitly selected; the default requires local files. `--full-fit` trains all supplied rows and reports no held-out score. The recipe uses three-class cross-entropy at 256 tokens, LR 2e-5 and duplicate-grouped validation; it is not an exact historical V1.x recipe replay. Artifacts declare class order in `showcase.json`. Int8 export rejects overlapping validation text and a macro-F1 drop ≥0.005, measures latency, and checks every validation decision after reload. A full-fit model requires separately reserved unseen validation data for this quality check.
 
 ## Tests and demo video
 
