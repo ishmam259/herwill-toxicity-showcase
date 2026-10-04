@@ -98,6 +98,18 @@ TRANSFORMER_MODEL_PATH=model/transformer-int8 SPARSE_MODEL_PATH=model/sparse.job
   python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
+**From the Kaggle kernel (one command).** `kaggle/deployable-transformer/` trains XLM-R-large on Kaggle
+(`python kaggle/deployable-transformer/build.py`, then `kaggle kernels push -p kaggle/deployable-transformer`).
+When it finishes, load your own Kaggle token and run:
+
+```bash
+python scripts/fetch_transformer.py
+```
+
+It downloads the kernel output, refuses a collapsed run (held-out macro F1 below 0.45) or a failed int8 gate,
+installs only the five int8 files in `model/transformer-int8` (gitignored), deletes the rest of the download
+(fp32 weights, any competition text), loads the model through the real predictor and prints the serve command.
+
 `--download-base` allows fetching a base model when explicitly selected; the default requires local files. `--full-fit` trains all supplied rows and reports no held-out score. The recipe uses three-class cross-entropy at 256 tokens, LR 2e-5 and duplicate-grouped validation; it is not an exact historical V1.x recipe replay. Artifacts declare class order in `showcase.json`. Int8 export rejects overlapping validation text and a macro-F1 drop ≥0.005, measures latency, and checks every validation decision after reload. A full-fit model requires separately reserved unseen validation data for this quality check.
 
 ## Tests and demo video

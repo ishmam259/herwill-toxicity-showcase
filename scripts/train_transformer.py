@@ -46,6 +46,8 @@ def train(args):
         )
     set_seed(args.seed)
     tr = pd.read_csv(args.train)
+    if args.limit:
+        tr = tr.sample(n=args.limit, random_state=args.seed).reset_index(drop=True)
     if (
         not {"text", "y"}.issubset(tr.columns)
         or set(tr.y.unique()) != {0, 1, 2}
@@ -90,12 +92,14 @@ def train(args):
             return out
 
     args.output.mkdir(parents=True, exist_ok=True)
+    steps_total = int(np.ceil(len(fit) / (args.batch_size * args.accumulation)) * args.epochs)
     training = TrainingArguments(
         output_dir=str(args.output / "checkpoints"),
         num_train_epochs=args.epochs,
-        learning_rate=2e-5,
+        learning_rate=args.lr,
         weight_decay=0.01,
-        warmup_ratio=0.1,
+        # warmup_steps (not warmup_ratio) works on transformers 4.x and 5.x.
+        warmup_steps=int(args.warmup * steps_total),
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
         gradient_accumulation_steps=args.accumulation,
@@ -142,7 +146,7 @@ def train(args):
         "training_rows": len(fit),
         "validation_rows": len(val),
         "evaluation": metrics,
-        "recipe": "three-class cross-entropy, 256 tokens, LR 2e-5, duplicate-grouped holdout or full fit",
+        "recipe": f"three-class cross-entropy, 256 tokens, LR {args.lr}, warmup {args.warmup}, duplicate-grouped holdout or full fit",
         "torch_version": torch.__version__,
     }
     (args.output / "showcase.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -174,6 +178,9 @@ if __name__ == "__main__":
     p.add_argument("--batch-size", type=int, default=8)
     p.add_argument("--accumulation", type=int, default=2)
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--lr", type=float, default=2e-5)
+    p.add_argument("--warmup", type=float, default=0.1, help="warmup as a fraction of total steps")
+    p.add_argument("--limit", type=int, default=0, help="use only the first N rows (pipeline smoke tests)")
     p.add_argument("--full-fit", action="store_true")
     p.add_argument("--download-base", action="store_true")
     p.add_argument("--allow-cpu", action="store_true")

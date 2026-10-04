@@ -98,7 +98,7 @@ with Ishmam and Obidit.
       submission, private 0.633) or say why V3.7 is better for the pages.
 - [x] Add **V1.3avg (MuRIL)** (moved to Farhan, 4 Oct; done: 0.5613) to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
 - [x] Update `docs/VERIFICATION.md` (moved to Farhan, 4 Oct; done: export and backend rows; browser suite not re-run) after the merge (19 API tests + 20 browser tests now; see the commit).
-- [ ] **Train the deployable transformer** (moved to Farhan, 4 Oct; in progress: XLM-R-large on the `farhantahsinkhan` Kaggle GPU, `kaggle/deployable-transformer/`) with
+- [ ] **Train the deployable transformer** (moved to Farhan, 4 Oct; in progress: XLM-R-large on the `farhantahsinkhan` Kaggle GPU, `kaggle/deployable-transformer/`. Pipeline verified end to end locally with a tiny model (train → int8 export → reload → API). When the kernel finishes: `python scripts/fetch_transformer.py`, then serve with `TRANSFORMER_MODEL_PATH=model/transformer-int8`. Hosting note for Ishmam: int8 XLM-R-large is ~550–600 MB, above Render free's 512 MB RAM; HF Spaces CPU fits) with
       `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
       Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
       (verdict and word weights), and TF-IDF stays as the second vote.
