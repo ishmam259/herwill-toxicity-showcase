@@ -1,0 +1,671 @@
+{
+  "schema_version": 1,
+  "class_order": [
+    0,
+    1,
+    2
+  ],
+  "warning": "Historical, adaptively inspected out-of-fold predictions. These diagnostics are not a fresh held-out evaluation. Specialist models cover Bangla-containing posts only; overall scores with different coverage are not directly comparable.",
+  "rows": 47817,
+  "source": "Verified local historical OOF artifacts",
+  "data_sha256": "a269ad841f824c6e60930cfda8cb25bdce58a6a1ee01fc1fe663d23b19e34449",
+  "script_definition": {
+    "B": "Contains at least one Bangla character (including mixed script)",
+    "L": "No Bangla characters; includes English, Banglish and other scripts"
+  },
+  "raw_text_included": false,
+  "models": [
+    {
+      "id": "V0.0",
+      "name": "TF-IDF + Logistic Regression",
+      "family": "tfidf",
+      "specialist": false,
+      "macro_f1": 0.5225443733657157,
+      "per_class_f1": [
+        0.6446238516392916,
+        0.49997261924319586,
+        0.42303664921465967
+      ],
+      "confusion": [
+        [
+          15051,
+          7145,
+          1560
+        ],
+        [
+          6702,
+          9130,
+          2331
+        ],
+        [
+          1188,
+          2084,
+          2626
+        ]
+      ],
+      "support": [
+        23756,
+        18163,
+        5898
+      ],
+      "rows": 47817,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.44519234125355506,
+          "per_class_f1": [
+            0.6794840193903541,
+            0.4128690386071158,
+            0.24322396576319544
+          ],
+          "confusion": [
+            [
+              8270,
+              3163,
+              507
+            ],
+            [
+              3555,
+              2727,
+              509
+            ],
+            [
+              577,
+              529,
+              341
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        },
+        "L": {
+          "macro_f1": 0.5438309396251939,
+          "per_class_f1": [
+            0.6066651755759338,
+            0.5493308167467399,
+            0.47549682655290815
+          ],
+          "confusion": [
+            [
+              6781,
+              3982,
+              1053
+            ],
+            [
+              3147,
+              6403,
+              1822
+            ],
+            [
+              611,
+              1555,
+              2285
+            ]
+          ],
+          "support": [
+            11816,
+            11372,
+            4451
+          ],
+          "rows": 27639
+        }
+      },
+      "source_sha256": "b189725568119005a913c3bcc5318d6246a4b4fc77983bb6e076cbee96a73e9d",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V1.2avg",
+      "name": "BanglaBERT · seed average",
+      "family": "encoder",
+      "specialist": true,
+      "macro_f1": 0.5045195838589507,
+      "per_class_f1": [
+        0.6952453857276516,
+        0.4628852039000783,
+        0.3554281619491222
+      ],
+      "confusion": [
+        [
+          8174,
+          3381,
+          385
+        ],
+        [
+          3076,
+          3252,
+          463
+        ],
+        [
+          324,
+          627,
+          496
+        ]
+      ],
+      "support": [
+        11940,
+        6791,
+        1447
+      ],
+      "rows": 20178,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.5045195838589507,
+          "per_class_f1": [
+            0.6952453857276516,
+            0.4628852039000783,
+            0.3554281619491222
+          ],
+          "confusion": [
+            [
+              8174,
+              3381,
+              385
+            ],
+            [
+              3076,
+              3252,
+              463
+            ],
+            [
+              324,
+              627,
+              496
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        }
+      },
+      "source_sha256": "16e9637a12f585f43e9b1b3e00864b28473747d5352a8820b31dfb20d9789411",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V1.7",
+      "name": "BanglaBERT Large",
+      "family": "encoder",
+      "specialist": true,
+      "macro_f1": 0.489516174567008,
+      "per_class_f1": [
+        0.6727704903600669,
+        0.45417124039517015,
+        0.34160679294578705
+      ],
+      "confusion": [
+        [
+          7642,
+          3834,
+          464
+        ],
+        [
+          2853,
+          3310,
+          628
+        ],
+        [
+          283,
+          641,
+          523
+        ]
+      ],
+      "support": [
+        11940,
+        6791,
+        1447
+      ],
+      "rows": 20178,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.489516174567008,
+          "per_class_f1": [
+            0.6727704903600669,
+            0.45417124039517015,
+            0.34160679294578705
+          ],
+          "confusion": [
+            [
+              7642,
+              3834,
+              464
+            ],
+            [
+              2853,
+              3310,
+              628
+            ],
+            [
+              283,
+              641,
+              523
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        }
+      },
+      "source_sha256": "9e4ba859395dc1f0d0f30107c686a9b02a958bbcb2f61bbc580e67e8fdd1525b",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V1.9",
+      "name": "IndicBERT v2",
+      "family": "encoder",
+      "specialist": false,
+      "macro_f1": 0.5687894165308881,
+      "per_class_f1": [
+        0.6838321842946024,
+        0.5197125546005354,
+        0.5028235106975264
+      ],
+      "confusion": [
+        [
+          16267,
+          6255,
+          1234
+        ],
+        [
+          6662,
+          9221,
+          2280
+        ],
+        [
+          891,
+          1846,
+          3161
+        ]
+      ],
+      "support": [
+        23756,
+        18163,
+        5898
+      ],
+      "rows": 47817,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.49787767588140835,
+          "per_class_f1": [
+            0.7183618397555459,
+            0.4260764587525151,
+            0.349194729136164
+          ],
+          "confusion": [
+            [
+              9051,
+              2498,
+              391
+            ],
+            [
+              3727,
+              2647,
+              417
+            ],
+            [
+              481,
+              489,
+              477
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        },
+        "L": {
+          "macro_f1": 0.5868619153866014,
+          "per_class_f1": [
+            0.6449479376145149,
+            0.5701647875108413,
+            0.5454730210344477
+          ],
+          "confusion": [
+            [
+              7216,
+              3757,
+              843
+            ],
+            [
+              2935,
+              6574,
+              1863
+            ],
+            [
+              410,
+              1357,
+              2684
+            ]
+          ],
+          "support": [
+            11816,
+            11372,
+            4451
+          ],
+          "rows": 27639
+        }
+      },
+      "source_sha256": "f41a0ba5ed237cf2baebdae1a87a6a4de2b15f340528899350abed7b3b02f5f7",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V2.2avg",
+      "name": "XLM-R Large · seed average",
+      "family": "encoder",
+      "specialist": false,
+      "macro_f1": 0.5838986900910138,
+      "per_class_f1": [
+        0.7030509990446572,
+        0.5184926524079733,
+        0.5301524188204109
+      ],
+      "confusion": [
+        [
+          17294,
+          5510,
+          952
+        ],
+        [
+          7232,
+          8909,
+          2022
+        ],
+        [
+          915,
+          1783,
+          3200
+        ]
+      ],
+      "support": [
+        23756,
+        18163,
+        5898
+      ],
+      "rows": 47817,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.48592799746398724,
+          "per_class_f1": [
+            0.7223227694558897,
+            0.3943877551020408,
+            0.3410734678340312
+          ],
+          "confusion": [
+            [
+              9379,
+              2202,
+              359
+            ],
+            [
+              4099,
+              2319,
+              373
+            ],
+            [
+              551,
+              448,
+              448
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        },
+        "L": {
+          "macro_f1": 0.6157680391807084,
+          "per_class_f1": [
+            0.6815050800757706,
+            0.5830568458305685,
+            0.5827421916357861
+          ],
+          "confusion": [
+            [
+              7915,
+              3308,
+              593
+            ],
+            [
+              3133,
+              6590,
+              1649
+            ],
+            [
+              364,
+              1335,
+              2752
+            ]
+          ],
+          "support": [
+            11816,
+            11372,
+            4451
+          ],
+          "rows": 27639
+        }
+      },
+      "source_sha256": "4c9035e2f14402f176eccf005490a3a76e6ea0abfe5026c55049f8d3d4fa696f",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V5.0",
+      "name": "Qwen 2.5 7B · LoRA",
+      "family": "llm",
+      "specialist": false,
+      "macro_f1": 0.5954629213617779,
+      "per_class_f1": [
+        0.7087610743917874,
+        0.5274898537183568,
+        0.5501378359751895
+      ],
+      "confusion": [
+        [
+          17640,
+          5268,
+          848
+        ],
+        [
+          7461,
+          9033,
+          1669
+        ],
+        [
+          920,
+          1785,
+          3193
+        ]
+      ],
+      "support": [
+        23756,
+        18163,
+        5898
+      ],
+      "rows": 47817,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.4601519705931278,
+          "per_class_f1": [
+            0.7274277242401779,
+            0.3489346202877436,
+            0.30409356725146197
+          ],
+          "confusion": [
+            [
+              9813,
+              1840,
+              287
+            ],
+            [
+              4579,
+              1916,
+              296
+            ],
+            [
+              648,
+              435,
+              364
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        },
+        "L": {
+          "macro_f1": 0.6375008635764486,
+          "per_class_f1": [
+            0.6866692985919199,
+            0.611767739717196,
+            0.6140655524202301
+          ],
+          "confusion": [
+            [
+              7827,
+              3428,
+              561
+            ],
+            [
+              2882,
+              7117,
+              1373
+            ],
+            [
+              272,
+              1350,
+              2829
+            ]
+          ],
+          "support": [
+            11816,
+            11372,
+            4451
+          ],
+          "rows": 27639
+        }
+      },
+      "source_sha256": "0839785a178e6488b44e34eeeb0db904aa3eed6881bc3224e00e7f99399d9d53",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    },
+    {
+      "id": "V3.7",
+      "name": "Text ensemble · S4",
+      "family": "ensemble",
+      "specialist": false,
+      "macro_f1": 0.6135071177648398,
+      "per_class_f1": [
+        0.708628841607565,
+        0.5641979699597822,
+        0.5676945417271718
+      ],
+      "confusion": [
+        [
+          16786,
+          6167,
+          803
+        ],
+        [
+          6169,
+          10311,
+          1683
+        ],
+        [
+          665,
+          1910,
+          3323
+        ]
+      ],
+      "support": [
+        23756,
+        18163,
+        5898
+      ],
+      "rows": 47817,
+      "by_script": {
+        "B": {
+          "macro_f1": 0.5201990305781738,
+          "per_class_f1": [
+            0.719741576709192,
+            0.4585572628869881,
+            0.3822982521383414
+          ],
+          "confusion": [
+            [
+              8801,
+              2825,
+              314
+            ],
+            [
+              3348,
+              3029,
+              414
+            ],
+            [
+              367,
+              566,
+              514
+            ]
+          ],
+          "support": [
+            11940,
+            6791,
+            1447
+          ],
+          "rows": 20178
+        },
+        "L": {
+          "macro_f1": 0.647913597735725,
+          "per_class_f1": [
+            0.6967713787085514,
+            0.623993144815767,
+            0.6229762696828565
+          ],
+          "confusion": [
+            [
+              7985,
+              3342,
+              489
+            ],
+            [
+              2821,
+              7282,
+              1269
+            ],
+            [
+              298,
+              1344,
+              2809
+            ]
+          ],
+          "support": [
+            11816,
+            11372,
+            4451
+          ],
+          "rows": 27639
+        }
+      },
+      "source_sha256": "b1fb6cb2470ea519060cfed969e12c9a812293dd1d27e6c7c56ebed933250277",
+      "inference": "historical-only",
+      "decision_rule": "raw probability argmax"
+    }
+  ]
+}
