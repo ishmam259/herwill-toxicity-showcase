@@ -80,6 +80,7 @@ preserved separately; its API and metrics schemas differ from the active app.
 
 **Page**
 - [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
+- [ ] **Deploy** (moved to Ishmam, 4 Oct): Render or HF Spaces, then run the GitHub Actions checks.
 
 ## Farhan (updated 4 Oct)
 
@@ -97,9 +98,13 @@ with Ishmam and Obidit.
       submission, private 0.633) or say why V3.7 is better for the pages.
 - [x] Add **V1.3avg (MuRIL)** (moved to Farhan, 4 Oct; done: 0.5613) to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
 - [x] Update `docs/VERIFICATION.md` (moved to Farhan, 4 Oct; done: export and backend rows; browser suite not re-run) after the merge (19 API tests + 20 browser tests now; see the commit).
+- [ ] **Train the deployable transformer** (moved to Farhan, 4 Oct; in progress: XLM-R-large on the `farhantahsinkhan` Kaggle GPU, `kaggle/deployable-transformer/`) with
+      `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
+      Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
+      (verdict and word weights), and TF-IDF stays as the second vote.
 
 
-## Obidit: the demo model and shipping (updated 4 Oct)
+## Obidit: shipping (updated 4 Oct)
 
 Done (thanks): the app shell, Model comparison, Confusion matrices, Calibration, Hard cases (local),
 18 examples, tests, accessibility pass, Docker / Render / HF Spaces config, CI, README.
@@ -108,12 +113,7 @@ Your server features (data routes, Hard cases gate, privacy headers, busy lock, 
 int8 transformer loading) were merged into `backend/app/`; `backend/main.py` and `src/LiveDemo.tsx` are gone.
 Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Playwright and README already updated).
 
-- [ ] **Train the deployable transformer** (BanglaBERT or XLM-R-large) on the `obiditislam` Kaggle GPU with
-      `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
-      Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
-      (verdict and word weights), and TF-IDF stays as the second vote.
 - [ ] **Re-record the walkthrough video**: the old one shows the removed Live Demo.
-- [ ] Deploy (Render or HF Spaces) and run the GitHub Actions checks.
 
 ## Shared / end
 

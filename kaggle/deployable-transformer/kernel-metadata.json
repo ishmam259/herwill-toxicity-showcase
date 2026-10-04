@@ -1,0 +1,13 @@
+{
+  "id": "farhantahsinkhan/herwill-showcase-xlmr-large",
+  "title": "herwill-showcase-xlmr-large",
+  "code_file": "kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "competition_sources": ["HerWILL-Safe-Social-Media-Datathon-2026"],
+  "dataset_sources": [],
+  "kernel_sources": []
+}

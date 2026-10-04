@@ -144,7 +144,6 @@ def train(args):
         "evaluation": metrics,
         "recipe": "three-class cross-entropy, 256 tokens, LR 2e-5, duplicate-grouped holdout or full fit",
         "torch_version": torch.__version__,
-        "public_reuse_permission": "pending organizer decision",
     }
     (args.output / "showcase.json").write_text(json.dumps(metadata, indent=2) + "\n")
     (args.output / "training_keys.sha256").write_text(
