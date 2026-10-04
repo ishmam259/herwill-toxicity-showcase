@@ -25,7 +25,7 @@ The task to save and shrink a deployable **transformer** remains pending suitabl
 
 ---
 
-# Showcase app: task split (Ishmam / Farhan / Obidit)
+# Showcase app: task split (Ishmam / Obidit; Farhan not involved)
 
 Goal: a web app that shows what our toxicity models can do on Bangla, Banglish and English posts
 (0 = Explicit, 1 = Subtle, 2 = Neutral).
@@ -39,8 +39,8 @@ comparison, confusion matrices, hard cases, calibration & thresholds.
 rules/id page, batch CSV upload, Bangla/English UI toggle and dark mode, content-warning blur.
 
 Rule: each person owns the models they built. Ishmam owns the encoders, TF-IDF and the text-only
-ensemble (V0–V3.11i). Farhan owns the LLM members (V5.x). Obidit owns the deployable model retrain,
-quality (tests, accessibility) and shipping (deploy, README, demo video).
+ensemble (V0–V3.11i). The LLM members (V5.x) are Farhan's competition runs; Obidit exports them for the app.
+Obidit owns the deployable model retrain, quality (tests, accessibility) and shipping (deploy, README, demo video).
 
 > **⚠ Data rule check first.** The competition rules (repo guide §1a, §6) say the dataset must not be
 > shared or used outside the competition. Until the organizers say otherwise, a **public** deployment
@@ -65,9 +65,9 @@ preserved separately; its API and metrics schemas differ from the active app.
 
 | File / endpoint | Content | Producer |
 |---|---|---|
-| `private/legacy-exports/models.json` | standalone list schema; aggregate snapshot in `docs/legacy-models.json`; built by `scripts/export_models.py` (merges by id, so run it with your own `--registry`). Per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam + Farhan (own models) |
+| `private/legacy-exports/models.json` | standalone list schema; aggregate snapshot in `docs/legacy-models.json`; built by `scripts/export_models.py` (merges by id, so run it with your own `--registry`). Per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam |
 | `private/legacy-exports/oof_rows.json` | per train row (sorted by id): script, true label, fold. **Gitignored** (derived from labels) | Ishmam (done) |
-| `private/legacy-exports/oof_<model>.json` | `{id, probs}`: probs[3] per row aligned to `oof_rows.json`, `null` where the model did not predict. **Gitignored** | Ishmam + Farhan (own models) |
+| `private/legacy-exports/oof_<model>.json` | `{id, probs}`: probs[3] per row aligned to `oof_rows.json`, `null` where the model did not predict. **Gitignored** | Ishmam |
 | `data/examples.json` | hand-written demo posts per class and script (safe to publish) | Obidit |
 | `POST /api/predict` | `{text}` → `{text, script, script_name, primary, label, label_name, models:[{id, name, label, probs[3], mode, has_features}], tokens:[{text, start, end, weight}], explanation, explanation_truncated, latency_ms, warning}` (see `backend/README.md`) | Ishmam (done) |
 
@@ -82,13 +82,10 @@ preserved separately; its API and metrics schemas differ from the active app.
 **Page**
 - [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 
-## Farhan: reviewer (updated 4 Oct)
+## Farhan (updated 4 Oct)
 
-Farhan's build work moved to Obidit. Farhan reviews instead, since Obidit can't review his own pages:
-
-- [ ] **Review** Obidit's results pages (wording, numbers, what the LLM rows say) and the 4 Oct merge that
-      made Ishmam's back end and Live Demo the active ones. Leave comments or push fixes.
-- [ ] Check the LLM numbers Obidit adds against your own runs in the competition repo (`Kernels/V5.*/preds`).
+No tasks: Farhan is not working on the app. His build work moved to Obidit, and reviews are done by
+Ishmam and Obidit (each reviews the other).
 
 ## Obidit: the demo model, permission and shipping (updated 4 Oct)
 
@@ -121,7 +118,7 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 
 ## Shared / end
 
-- [ ] Every PR is reviewed by one of the other two.
+- [ ] Every PR is reviewed by the other builder: Ishmam reviews Obidit's, Obidit reviews Ishmam's (starting with the 4 Oct merge).
 - [ ] Final run-through together before sharing the link.
 
 ## Milestones
@@ -132,4 +129,4 @@ Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Play
 
 Handoff points (4 Oct): Ishmam's back end serves Obidit's transformer once it is trained; until then it serves
 TF-IDF (the local full-data model on a teammate's machine, the authored-example model in public builds).
-Obidit adds the LLM exports to the results pages through `scripts/export_results.py`; Farhan reviews.
+Obidit adds the LLM exports to the results pages through `scripts/export_results.py`.
