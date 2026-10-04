@@ -56,31 +56,36 @@ quality (tests, accessibility) and shipping (deploy, README, demo video).
 - [ ] Freeze the **data contract** (below). After this, all three of you can work in parallel without waiting on each other.
 - [ ] Create the folders: `App/frontend/`, `App/backend/`, `App/data/` (generated JSON), `App/scripts/` (exporters) and `App/tests/`.
 
-### Data contract (draft)
+### Data contract (historical standalone draft)
+
+The active five-page showcase follows `docs/SPEC.md` and uses
+`scripts/export_results.py`. The standalone implementation from Ishmam is
+preserved separately; its API and metrics schemas differ from the active app.
 
 | File / endpoint | Content | Producer |
 |---|---|---|
-| `data/models.json` | per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam + Farhan (own models) |
-| `data/oof_<model>.json` | per train row: idx, script, true label, probs[3], fold (text joined locally only, see the data rule) | Ishmam + Farhan (own models) |
+| `private/legacy-exports/models.json` | standalone list schema; aggregate snapshot in `docs/legacy-models.json`; built by `scripts/export_models.py` (merges by id, so run it with your own `--registry`). Per model: id, name, family (tfidf / encoder / llm / ensemble), macro F1, per-class F1, per-script F1, confusion matrix (overall and per script) | Ishmam + Farhan (own models) |
+| `private/legacy-exports/oof_rows.json` | per train row (sorted by id): script, true label, fold. **Gitignored** (derived from labels) | Ishmam (done) |
+| `private/legacy-exports/oof_<model>.json` | `{id, probs}`: probs[3] per row aligned to `oof_rows.json`, `null` where the model did not predict. **Gitignored** | Ishmam + Farhan (own models) |
 | `data/examples.json` | hand-written demo posts per class and script (safe to publish) | Obidit |
-| `POST /api/predict` | `{text}` → `{script, models:[{id, label, probs[3]}], tokens:[{text, weight}]}` | Ishmam |
+| `POST /api/predict` | `{text}` → `{text, script, primary, label, label_name, models:[{id, name, label, probs[3]}], tokens:[{text, start, end, weight}]}` (see `backend/README.md`) | Ishmam (done) |
 
 ---
 
 ## Ishmam: back end and the Live Demo
 
 **Back end**
-- [ ] FastAPI `/predict`: runs TF-IDF (instant) and Obidit's transformer, and returns each model's label and probabilities (per-model votes), the script (`text_utils.py`) and per-token importance (TF-IDF coefficients or integrated gradients).
-- [ ] Exporters in `App/scripts/` for the encoder, TF-IDF and V3.11i OOF predictions; their rows in `models.json`.
+- [x] FastAPI `/predict`: runs TF-IDF (instant) and Obidit's transformer, and returns each model's label and probabilities (per-model votes), the script (`text_utils.py`) and per-token importance (TF-IDF coefficients or integrated gradients).
+- [x] Exporters in `scripts/` for the encoder, TF-IDF and V3.11i OOF predictions; their rows in the standalone `models.json` schema (snapshot: `docs/legacy-models.json`).
 
 **Page**
-- [ ] **Live Demo**: text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
+- [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 
 ## Farhan: app shell and the results pages
 
 **Front end and data**
 - [ ] App shell: routing, layout, design tokens.
-- [ ] Exporters for the LLM members (V5.x); their rows in `models.json`.
+- [ ] Exporters for the LLM members (V5.x); their rows in the standalone `models.json` schema (snapshot: `docs/legacy-models.json`).
 
 **Pages**
 - [ ] **Model comparison**: macro / per-class / per-script F1 for all members.

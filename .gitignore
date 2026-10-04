@@ -31,3 +31,5 @@ coverage/
 # Generated screenshots and verification captures
 output/
 .ruff_cache/
+# Legacy row-level competition exports
+data/oof_*.json

@@ -1,0 +1,53 @@
+/* Design tokens. Farhan's app shell owns these; the Live Demo only reads them. */
+:root {
+  --fog: #f3f4f8;
+  --paper: #ffffff;
+  --ink: #1d1a2e;
+  --ink-soft: #57536b;
+  --line: #d9dbe6;
+  --explicit: #c2185b;
+  --subtle: #b7791f;
+  --neutral: #2f7d6d;
+  --focus: #4b3fd1;
+
+  --font-display: 'Anek Bangla', 'Hind Siliguri', system-ui, sans-serif;
+  --font-body: 'Hind Siliguri', system-ui, sans-serif;
+
+  color-scheme: light;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--fog);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fog);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
