@@ -92,11 +92,11 @@ def export(args):
         },
     }
     (args.output / "showcase.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    from backend.inference import TransformerPredictor
+    from backend.app.predictors import TransformerPredictor
 
     loaded = TransformerPredictor(args.output)
     # Compare every validation decision after reload, not just one sample.
-    reload_pred = [loaded.predict(text)["label"] for text in val.text]
+    reload_pred = [int(loaded.predict_proba([text])[0].argmax()) for text in val.text]
     if reload_pred != b:
         raise ValueError("Reloaded int8 decisions differ")
     print(json.dumps(metadata["quantization_check"], indent=2))

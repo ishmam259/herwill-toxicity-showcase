@@ -23,7 +23,7 @@ process = subprocess.Popen(
         "python",
         "-m",
         "uvicorn",
-        "backend.main:app",
+        "backend.app.main:app",
         "--host",
         "127.0.0.1",
         "--port",

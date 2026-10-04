@@ -9,27 +9,19 @@ async function nav(page: import("@playwright/test").Page, name: string) {
     .click();
 }
 
-test("classifies entered text and shows actual token signals", async ({
-  page,
-}) => {
+test("classifies entered text and shows word signals", async ({ page }) => {
   await page.goto("/");
-  await page
-    .getByLabel("What would you like to analyze?")
-    .fill("You are an idiot. Shut up.");
-  await page.getByRole("button", { name: "Analyze post" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Signals in the words" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Served model votes" }),
-  ).toBeVisible();
-  await expect(page.locator(".prediction-label h3")).toHaveText(
-    /Explicit|Subtle|Neutral/,
+  await page.getByLabel("Post to check").fill("You are an idiot. Shut up.");
+  await page.getByRole("button", { name: "Check post" }).click();
+  await expect(page.locator(".lens-verdict")).toHaveText(
+    /Explicitly toxic|Subtly toxic|Not toxic/,
   );
-  await page.getByLabel("What would you like to analyze?").fill("Edited post");
   await expect(
-    page.getByRole("heading", { name: "Signals in the words" }),
-  ).toHaveCount(0);
+    page.getByRole("heading", { name: "What each model says" }),
+  ).toBeVisible();
+  await expect(page.locator(".lens-post .lens-w").first()).toBeVisible();
+  await page.getByLabel("Post to check").fill("Edited post");
+  await expect(page.locator(".lens-verdict")).toHaveCount(0);
 });
 
 test("all pages, filters and threshold offsets work", async ({ page }) => {
@@ -71,14 +63,16 @@ test("all pages, filters and threshold offsets work", async ({ page }) => {
 
 test("examples and keyboard shortcut work for Bangla", async ({ page }) => {
   await page.goto("/");
-  await page.getByLabel("Example language").selectOption("Bangla");
-  await page.locator(".example-button").last().click();
-  const editor = page.getByLabel("What would you like to analyze?");
-  await expect(editor).toHaveValue(/আমি/);
+  await page
+    .getByRole("group", { name: "Example language" })
+    .getByRole("button", { name: "Bangla", exact: true })
+    .click();
+  await page.locator(".lens-example").last().click();
+  const editor = page.getByLabel("Post to check");
+  await expect(editor).toHaveValue(/[ঀ-৿]/);
+  await expect(page.locator(".lens-verdict-meta")).toContainText("Bangla script");
   await editor.press("Control+Enter");
-  await expect(page.locator(".prediction-caption")).toContainText(
-    "Bangla script",
-  );
+  await expect(page.locator(".lens-verdict-meta")).toContainText("Bangla script");
 });
 
 test("handles API errors without presenting a prediction", async ({ page }) => {
@@ -86,9 +80,10 @@ test("handles API errors without presenting a prediction", async ({ page }) => {
     route.fulfill({ status: 503, body: "Service unavailable" }),
   );
   await page.goto("/");
-  await page.getByRole("button", { name: "Analyze post" }).click();
+  await page.getByLabel("Post to check").fill("Hello there");
+  await page.getByRole("button", { name: "Check post" }).click();
   await expect(page.getByRole("alert")).toContainText("503");
-  await expect(page.locator(".prediction-label")).toHaveCount(0);
+  await expect(page.locator(".lens-verdict")).toHaveCount(0);
 });
 
 test("editing during a request prevents stale results", async ({ page }) => {
@@ -99,15 +94,12 @@ test("editing during a request prevents stale results", async ({ page }) => {
     } catch {}
   });
   await page.goto("/");
-  await page.getByRole("button", { name: "Analyze post" }).click();
-  await page
-    .getByLabel("What would you like to analyze?")
-    .fill("A different post");
-  await expect(
-    page.getByRole("button", { name: "Analyze post" }),
-  ).toBeEnabled();
+  await page.getByLabel("Post to check").fill("Congratulations on the new job!");
+  await page.getByRole("button", { name: "Check post" }).click();
+  await page.getByLabel("Post to check").fill("A different post");
+  await expect(page.getByRole("button", { name: "Check post" })).toBeEnabled();
   await page.waitForTimeout(800);
-  await expect(page.locator(".prediction-label")).toHaveCount(0);
+  await expect(page.locator(".lens-verdict")).toHaveCount(0);
 });
 
 for (const path of [

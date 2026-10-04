@@ -12,3 +12,7 @@ backend/__pycache__
 !data/models.json
 !data/calibration.json
 !data/examples.json
+backend/.venv
+backend/model
+backend/**/__pycache__
+backend/tests

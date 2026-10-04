@@ -8,6 +8,8 @@ export interface ModelVote {
   name: string
   label: Label
   probs: [number, number, number]
+  mode: 'local-trained' | 'illustrative'
+  has_features: boolean
 }
 
 export interface Token {
@@ -20,11 +22,23 @@ export interface Token {
 export interface Prediction {
   text: string
   script: Script
+  script_name: string
   primary: string
   label: Label
   label_name: string
   models: ModelVote[]
   tokens: Token[]
+  explanation: string
+  explanation_truncated: boolean
+  latency_ms: number
+  warning: string | null
+}
+
+export interface Example {
+  id: string
+  language: string
+  label: number
+  text: string
 }
 
 export const CLASSES: { label: Label; key: 'explicit' | 'subtle' | 'neutral'; verdict: string; short: string }[] = [

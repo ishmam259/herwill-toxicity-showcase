@@ -5,17 +5,17 @@ test("record the showcase walkthrough", async ({ page }, info) => {
     "Run npm run record:demo for the desktop walkthrough.",
   );
   await page.goto("/");
-  await page.getByRole("button", { name: "Analyze post" }).click();
+  await page.locator(".lens-example").first().click();
   await expect(
-    page.getByRole("heading", { name: "Signals in the words" }),
+    page.getByRole("heading", { name: "What each model says" }),
   ).toBeVisible();
   await page.waitForTimeout(1500);
-  await page.getByLabel("Example language").selectOption("Bangla");
-  await page.locator(".example-button").last().click();
-  await page.getByRole("button", { name: "Analyze post" }).click();
-  await expect(page.locator(".prediction-caption")).toContainText(
-    "Bangla script",
-  );
+  await page
+    .getByRole("group", { name: "Example language" })
+    .getByRole("button", { name: "English", exact: true })
+    .click();
+  await page.locator(".lens-example").nth(2).click();
+  await expect(page.locator(".lens-verdict")).toBeVisible();
   await page.waitForTimeout(1500);
   for (const name of [
     "Model comparison",

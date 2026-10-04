@@ -16,7 +16,7 @@ import rawResults from "../../data/models.json";
 import rawCalibration from "../../data/calibration.json";
 import rawExamples from "../../data/examples.json";
 import { type Results, type CalibrationData, type Example } from "./types";
-import LiveDemo from "./LiveDemo";
+import LiveDemo from "./features/live-demo/LiveDemo";
 import { Card } from "./components";
 import { Comparison, Confusion, Calibration, HardCases } from "./ResultsPages";
 const results = rawResults as Results;

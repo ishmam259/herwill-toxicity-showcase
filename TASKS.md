@@ -6,9 +6,10 @@ The software scaffold has been implemented. The original team plan is preserved 
 |---|---|
 | React/Vite shell, responsive layout, routes, class tokens | Complete |
 | Frozen contracts and product specification | Complete — `docs/SPEC.md` |
-| FastAPI classifier, script badges, probabilities, model votes, token highlighting | Complete — authored fallback and saved full-fit local TF-IDF |
+| FastAPI classifier, script badges, probabilities, model votes, token highlighting | Complete — **one server, `backend/app/` (Ishmam's)**; Obidit's routes, privacy gate and authored fallback merged into it on 4 Oct; `backend/main.py` removed |
 | 18 original examples across Bangla, Banglish, English × three classes | Complete |
 | Verified encoder, TF-IDF, Qwen and text-ensemble aggregate exporters | Complete — 7 models; hash, alignment, coverage and ensemble checks |
+| Live Demo page | Complete — **Ishmam's `features/live-demo/`** mounted on `/`; Obidit's `src/LiveDemo.tsx` removed on 4 Oct |
 | Model comparison and script slices | Complete |
 | Confusion matrices, normalization and Explicit/Subtle emphasis | Complete |
 | Reliability curves, ECE/Brier and exact interactive offset grid | Complete |
@@ -68,7 +69,7 @@ preserved separately; its API and metrics schemas differ from the active app.
 | `private/legacy-exports/oof_rows.json` | per train row (sorted by id): script, true label, fold. **Gitignored** (derived from labels) | Ishmam (done) |
 | `private/legacy-exports/oof_<model>.json` | `{id, probs}`: probs[3] per row aligned to `oof_rows.json`, `null` where the model did not predict. **Gitignored** | Ishmam + Farhan (own models) |
 | `data/examples.json` | hand-written demo posts per class and script (safe to publish) | Obidit |
-| `POST /api/predict` | `{text}` → `{text, script, primary, label, label_name, models:[{id, name, label, probs[3]}], tokens:[{text, start, end, weight}]}` (see `backend/README.md`) | Ishmam (done) |
+| `POST /api/predict` | `{text}` → `{text, script, script_name, primary, label, label_name, models:[{id, name, label, probs[3], mode, has_features}], tokens:[{text, start, end, weight}], explanation, explanation_truncated, latency_ms, warning}` (see `backend/README.md`) | Ishmam (done) |
 
 ---
 
@@ -81,33 +82,41 @@ preserved separately; its API and metrics schemas differ from the active app.
 **Page**
 - [x] **Live Demo** (`frontend/src/features/live-demo/`): text box, class + confidence bars, script badge, highlighted words, the served models' votes side by side, example posts to try.
 
-## Farhan: app shell and the results pages
+## Farhan: the LLM side of the results (updated 4 Oct)
 
-**Front end and data**
-- [ ] App shell: routing, layout, design tokens.
-- [ ] Exporters for the LLM members (V5.x); their rows in the standalone `models.json` schema (snapshot: `docs/legacy-models.json`).
+Obidit already built the shell and the Model comparison, Confusion matrices and Hard cases pages, so those
+are no longer Farhan's to build. Farhan now owns their **content** for the LLM models, and reviews them.
 
-**Pages**
-- [ ] **Model comparison**: macro / per-class / per-script F1 for all members.
-- [ ] **Confusion matrices**: switchable by model and by script; highlight Subtle vs Explicit.
-- [ ] **Hard cases** (local only): posts every model gets wrong, and posts only the LLMs get right, with every model's vote on each post.
+- [ ] **Add the strongest LLMs** to `scripts/export_results.py`: today it has only V5.0 (Qwen2.5-7B). Add
+      V5.11 (region-tag Qwen2.5-7B, 0.640, best single model), V5.2avg (Qwen3-14B) and V5.3avg (Llama),
+      re-run it, and check the numbers against `RESULTS.md` in the competition repo.
+- [ ] **Hard cases, "only the LLMs get right":** it is defined with V5.0 alone. Decide which LLM(s) it
+      should use (probably V5.11) and update the definition and its test (`test_private_export_vote_definitions`).
+- [ ] **Review** Obidit's three results pages (wording, numbers, what the LLM rows say) and the 4 Oct merge
+      that made Ishmam's back end and Live Demo the active ones. Leave comments or push fixes.
+- [ ] Keep the private rule: Hard cases stays local; never commit `private/`.
 
-## Obidit: the demo model, calibration and shipping
+## Obidit: the demo model, permission and shipping (updated 4 Oct)
 
-**Model** (the `obiditislam` Kaggle account still has GPU hours)
-- [ ] Retrain one deployable transformer (BanglaBERT or XLM-R-large) on the full train set with the V1.x recipe, and **save the weights** (none are saved now). Hand Ishmam a `model/` folder plus the expected CV score.
-- [ ] Shrink it for CPU serving (ONNX or int8 dynamic quantization); check that macro F1 drops by less than 0.005 and measure latency per post.
+Done (thanks): the app shell, Model comparison, Confusion matrices, Calibration, Hard cases (local),
+18 examples, tests, accessibility pass, Docker / Render / HF Spaces config, CI, README.
+**Changed on 4 Oct:** the team kept Ishmam's back end (`backend/app/`) and Live Demo (`features/live-demo/`).
+Your server features (data routes, Hard cases gate, privacy headers, busy lock, static UI, authored fallback,
+int8 transformer loading) were merged into `backend/app/`; `backend/main.py` and `src/LiveDemo.tsx` are gone.
+Start the server with `python -m uvicorn backend.app.main:app` (Dockerfile, Playwright and README already updated).
 
-**Page and shipping**
-- [ ] O1: ask the organizers whether a public demo may use the trained model and show dataset posts; record the answer here.
-- [ ] `data/examples.json`: 15–20 hand-written example posts (Bangla, Banglish, English × the 3 classes), not copied from the dataset.
-- [ ] **Calibration & thresholds** page: reliability curves; an offset slider that recomputes macro F1 live from the OOF predictions.
-- [ ] Playwright smoke tests: the demo returns a label; every page renders.
-- [ ] Accessibility pass (keyboard, contrast, screen-reader labels on charts).
-- [ ] Dockerfile, the deploy target (HF Spaces / Render) and a CI check that runs the tests.
-- [ ] README with run instructions, and the demo video (Playwright screen recording).
-
----
+- [ ] **Train the deployable transformer** (BanglaBERT or XLM-R-large) on the `obiditislam` Kaggle GPU with
+      `scripts/train_transformer.py`, then `scripts/export_cpu.py` for int8 (macro F1 drop < 0.005).
+      Serve it with `TRANSFORMER_MODEL_PATH=<folder>`: it becomes the primary model in the Live Demo
+      (verdict and word weights), and TF-IDF stays as the second vote.
+- [ ] **O1: send the question to the organizers** (public demo with the trained model; showing dataset posts).
+      Record the answer here. Nothing goes public before that.
+- [ ] **Text ensemble:** `scripts/export_results.py` uses V3.7; switch it to **V3.11i** (our final text-only
+      submission, private 0.633) or say why V3.7 is better for the pages.
+- [ ] Add **V1.3avg (MuRIL)** to the exporter (it is in Ishmam's model list but missing from `data/models.json`).
+- [ ] **Re-record the walkthrough video**: the old one shows the removed Live Demo.
+- [ ] Update `docs/VERIFICATION.md` after the merge (19 API tests + 20 browser tests now; see the commit).
+- [ ] After O1 says yes: deploy (Render or HF Spaces) and run the GitHub Actions checks.
 
 ## Shared / end
 
@@ -120,6 +129,6 @@ preserved separately; its API and metrics schemas differ from the active app.
 2. **M2:** Obidit's transformer serves the demo; Confusion matrices and Calibration pages done; smoke tests in CI.
 3. **M3:** Hard cases, accessibility pass, deploy and the demo video.
 
-Handoff points: Farhan's pages use Ishmam's OOF exports (Phase 0 contract). Ishmam's back end serves
-Obidit's model; until it lands, it serves TF-IDF only. Ishmam's and Obidit's pages render inside
-Farhan's shell, so build them as standalone components until the shell lands.
+Handoff points (4 Oct): Ishmam's back end serves Obidit's transformer once it is trained; until then it serves
+TF-IDF (the local full-data model on a teammate's machine, the authored-example model in public builds).
+Farhan's LLM exports feed Obidit's results pages through `scripts/export_results.py`.

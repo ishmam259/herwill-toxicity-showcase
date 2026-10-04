@@ -21,7 +21,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --no-proxy-headers",
+        "python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-proxy-headers",
       url: "http://127.0.0.1:8000/api/health",
       reuseExistingServer: !process.env.CI,
       env: {

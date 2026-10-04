@@ -1,7 +1,7 @@
 # Front end (React + Vite)
 
-The active five-page showcase uses `src/App.tsx`, `src/LiveDemo.tsx` and
-`src/styles.css`, with the API in `backend/main.py`. From the repository root:
+The active five-page showcase uses `src/App.tsx` (the shell), `src/features/live-demo/` (the Live Demo on `/`) and
+`src/styles.css`, with the API in `backend/app/` (see [the backend README](../backend/README.md)). From the repository root:
 
 ```bash
 npm ci
@@ -11,8 +11,5 @@ npm run build
 
 Dependencies are managed by the root workspace and `package-lock.json`.
 
-Ishmam's earlier standalone demo is preserved in `src/features/live-demo/`,
-with its design tokens in `src/index.css`. It expects the separate legacy API
-in `backend/app/main.py`; its response format differs from the active API.
-It is not mounted by the active app. `VITE_API_BASE` sets its API origin
-(empty = same origin). See [the backend README](../backend/README.md).
+The Live Demo's classes are prefixed `lens-` and its tokens are scoped to `.lens`, so it does not touch the
+shell's styles. `VITE_API_BASE` sets its API origin (empty = same origin).

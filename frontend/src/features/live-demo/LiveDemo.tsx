@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react'
 import type { FormEvent, KeyboardEvent, ReactNode } from 'react'
 import { predict, PredictError } from './api'
-import { EXAMPLES } from './examples'
 import { CLASSES, SCRIPT_NAMES } from './types'
-import type { Prediction, Token } from './types'
+import type { Example, Prediction, Token } from './types'
 import './LiveDemo.css'
 
 const MAX_CHARS = 2000
+const LANGUAGES = ['Bangla', 'Banglish', 'English']
 const pct = (p: number) => `${Math.round(p * 100)}%`
 // "girl," -> "girl", so the list of strongest words reads cleanly
 const bare = (w: string) => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '') || w
@@ -17,8 +17,10 @@ type State =
   | { kind: 'error'; message: string }
   | { kind: 'done'; result: Prediction }
 
-export default function LiveDemo() {
+// Mounted by the app shell on "/"; the shell supplies the page title (h1).
+export default function LiveDemo({ examples }: { examples: Example[] }) {
   const [text, setText] = useState('')
+  const [language, setLanguage] = useState('Bangla')
   const [state, setState] = useState<State>({ kind: 'idle' })
   const abortRef = useRef<AbortController | null>(null)
 
@@ -29,11 +31,19 @@ export default function LiveDemo() {
     abortRef.current = ctrl
     setState({ kind: 'loading' })
     try {
-      setState({ kind: 'done', result: await predict(post, ctrl.signal) })
+      const result = await predict(post, ctrl.signal)
+      if (!ctrl.signal.aborted) setState({ kind: 'done', result })
     } catch (err) {
       if ((err as Error).name === 'AbortError') return
       setState({ kind: 'error', message: err instanceof PredictError ? err.message : 'Something went wrong. Try again.' })
     }
+  }
+
+  function edit(next: string) {
+    // A verdict for different text would be misleading: drop it, and any answer still on its way.
+    abortRef.current?.abort()
+    setText(next)
+    if (state.kind !== 'idle') setState({ kind: 'idle' })
   }
 
   function onSubmit(e: FormEvent) {
@@ -42,7 +52,10 @@ export default function LiveDemo() {
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) run(text)
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault()
+      run(text)
+    }
   }
 
   function tryExample(example: string) {
@@ -50,46 +63,48 @@ export default function LiveDemo() {
     run(example)
   }
 
-  return (
-    <section className="lens" aria-labelledby="lens-title">
-      <header className="lens-head">
-        <h1 id="lens-title">Read a post the way our model does</h1>
-        <p className="lens-sub">
-          Paste a comment in Bangla, Banglish or English. The model says whether it is explicitly toxic, subtly
-          toxic or not toxic, and which words moved it.
-        </p>
-      </header>
+  const shown = examples.filter((e) => e.language === language)
 
-      <form className="composer" onSubmit={onSubmit}>
-        <label htmlFor="post" className="sr-only">Post to check</label>
+  return (
+    <section className="lens" aria-label="Live demo">
+      <form className="lens-composer" onSubmit={onSubmit}>
+        <label htmlFor="lens-post">Post to check</label>
         <textarea
-          id="post"
+          id="lens-post"
           value={text}
           maxLength={MAX_CHARS}
           rows={4}
-          placeholder="Type or paste a post…"
-          onChange={(e) => setText(e.target.value)}
+          placeholder="Type or paste a post in Bangla, Banglish or English…"
+          onChange={(e) => edit(e.target.value)}
           onKeyDown={onKeyDown}
         />
-        <div className="composer-row">
+        <div className="lens-composer-row">
           <button type="submit" disabled={!text.trim() || state.kind === 'loading'}>
             {state.kind === 'loading' ? 'Checking…' : 'Check post'}
           </button>
-          <span className="hint">
+          <span className="lens-hint">
             <span>Ctrl + Enter also checks</span>
             <span>{text.length} / {MAX_CHARS}</span>
           </span>
         </div>
       </form>
 
-      <div className="examples">
-        <p id="examples-label">Or try one of these</p>
-        <ul aria-labelledby="examples-label">
-          {EXAMPLES.map((ex) => (
-            <li key={ex.text}>
-              <button type="button" className="example" onClick={() => tryExample(ex.text)}>
-                <span className="example-script">{ex.script}</span>
-                <span className="example-text">{ex.text}</span>
+      <div className="lens-examples">
+        <div className="lens-examples-head">
+          <p id="lens-examples-label">Or try a hand-written example</p>
+          <div className="lens-langs" role="group" aria-label="Example language">
+            {LANGUAGES.map((l) => (
+              <button key={l} type="button" aria-pressed={language === l} onClick={() => setLanguage(l)}>
+                {l}
+              </button>
+            ))}
+          </div>
+        </div>
+        <ul aria-labelledby="lens-examples-label">
+          {shown.map((ex) => (
+            <li key={ex.id}>
+              <button type="button" className="lens-example" onClick={() => tryExample(ex.text)}>
+                {ex.text}
               </button>
             </li>
           ))}
@@ -97,7 +112,7 @@ export default function LiveDemo() {
       </div>
 
       <div aria-live="polite">
-        {state.kind === 'error' && <p className="error" role="alert">{state.message}</p>}
+        {state.kind === 'error' && <p className="lens-error" role="alert">{state.message}</p>}
         {state.kind === 'done' && <Result result={state.result} />}
       </div>
     </section>
@@ -110,17 +125,21 @@ function Result({ result }: { result: Prediction }) {
   const pushers = [...result.tokens].filter((t) => t.weight > 0).sort((a, b) => b.weight - a.weight).slice(0, 3)
 
   return (
-    <article className={`result is-${cls.key}`}>
-      <div className="verdict-row">
-        <h2 className="verdict">{cls.verdict}</h2>
-        <p className="verdict-meta">
+    <article className={`lens-result is-${cls.key}`}>
+      <div className="lens-verdict-row">
+        <h2 className="lens-verdict">{cls.verdict}</h2>
+        <p className="lens-verdict-meta">
           <span>{pct(primary.probs[result.label])} confident</span>
           <span>{SCRIPT_NAMES[result.script]}</span>
         </p>
       </div>
+      {result.warning && <p className="lens-notice">{result.warning}</p>}
+      {!primary.has_features && (
+        <p className="lens-notice">None of these words were seen in training, so this verdict has little to go on.</p>
+      )}
 
       <Highlighted text={result.text} tokens={result.tokens} />
-      <p className="reading-key">
+      <p className="lens-key">
         {pushers.length > 0 ? (
           <>
             Thicker underline, stronger push toward “{cls.verdict.toLowerCase()}”. Strongest:{' '}
@@ -130,6 +149,7 @@ function Result({ result }: { result: Prediction }) {
                 {i < pushers.length - 1 ? ', ' : '.'}
               </span>
             ))}
+            {result.explanation_truncated && ' Only the first 80 words were tested.'}
           </>
         ) : (
           'No single word moved the verdict much; the model read the post as a whole.'
@@ -137,21 +157,21 @@ function Result({ result }: { result: Prediction }) {
       </p>
 
       <h3>How sure, per class</h3>
-      <dl className="bars">
+      <dl className="lens-bars">
         {CLASSES.map((c) => (
-          <div key={c.key} className={`bar-row is-${c.key}`}>
+          <div key={c.key} className={`lens-bar-row is-${c.key}`}>
             <dt>{c.short}</dt>
             <dd>
-              <span className="bar" style={{ width: pct(primary.probs[c.label]) }} />
-              <span className="bar-value">{pct(primary.probs[c.label])}</span>
+              <span className="lens-bar" style={{ width: pct(primary.probs[c.label]) }} />
+              <span className="lens-bar-value">{pct(primary.probs[c.label])}</span>
             </dd>
           </div>
         ))}
       </dl>
 
       <h3>What each model says</h3>
-      <div className="table-wrap">
-        <table className="votes">
+      <div className="lens-table-wrap" tabIndex={0} role="region" aria-label="Model votes">
+        <table className="lens-votes">
           <thead>
             <tr>
               <th scope="col">Model</th>
@@ -164,7 +184,10 @@ function Result({ result }: { result: Prediction }) {
           <tbody>
             {result.models.map((m) => (
               <tr key={m.id}>
-                <th scope="row">{m.name}</th>
+                <th scope="row">
+                  {m.name}
+                  {m.mode === 'illustrative' && <small> (demo model)</small>}
+                </th>
                 <td className={`is-${CLASSES[m.label].key}`}>{CLASSES[m.label].short}</td>
                 {m.probs.map((p, i) => (
                   <td key={i} className="num">{pct(p)}</td>
@@ -174,6 +197,10 @@ function Result({ result }: { result: Prediction }) {
           </tbody>
         </table>
       </div>
+      <p className="lens-foot">
+        <span>{result.explanation}</span>
+        <span>Answered in {result.latency_ms} ms. The text you enter is not stored.</span>
+      </p>
     </article>
   )
 }
@@ -185,17 +212,18 @@ function Highlighted({ text, tokens }: { text: string; tokens: Token[] }) {
   for (const t of tokens) {
     if (t.start > at) parts.push(text.slice(at, t.start))
     const strength = t.weight / max // -1..1
-    const style =
-      strength > 0.08
-        ? { textDecorationThickness: `${1 + strength * 5}px` }
-        : undefined
+    const pushes = strength > 0.08
     parts.push(
-      <span key={t.start} className={strength > 0.08 ? 'w push' : 'w'} style={style}>
+      <span
+        key={t.start}
+        className={pushes ? 'lens-w is-push' : 'lens-w'}
+        style={pushes ? { textDecorationThickness: `${1 + strength * 5}px` } : undefined}
+      >
         {text.slice(t.start, t.end)}
       </span>,
     )
     at = t.end
   }
   if (at < text.length) parts.push(text.slice(at))
-  return <blockquote className="post">{parts}</blockquote>
+  return <blockquote className="lens-post">{parts}</blockquote>
 }

@@ -1,81 +1,109 @@
-.lens {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 3.5rem 1rem 5rem;
-}
+/* Live Demo. Every class is prefixed lens- and the tokens are scoped to .lens, so nothing leaks into the shell.
+   Class colours match the shell's classColors (types.ts); body text inherits the shell's fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wdth,wght@75..125,600..800&display=swap');
 
-/* Head */
-.lens-head h1 {
-  font-family: var(--font-display);
-  font-variation-settings: 'wdth' 82;
-  font-weight: 700;
-  font-size: clamp(2rem, 5.5vw, 3.1rem);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  margin: 0 0 0.75rem;
-  max-width: 16ch;
+.lens {
+  --lens-ink: #342d33;
+  --lens-soft: #6f666e;
+  --lens-line: #e3dcdf;
+  --lens-paper: #fff;
+  --lens-explicit: #ae3d45;
+  --lens-subtle: #9c6b17;
+  --lens-neutral: #287767;
+  --lens-focus: #702642;
+  max-width: 48rem;
+  color: var(--lens-ink);
 }
-.lens-sub {
-  margin: 0 0 2rem;
-  color: var(--ink-soft);
-  max-width: 34rem;
+.lens :focus-visible {
+  outline: 3px solid var(--lens-focus);
+  outline-offset: 2px;
 }
 
 /* Composer */
-.composer textarea {
+.lens-composer label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.lens-composer textarea {
+  display: block;
   width: 100%;
   min-height: 7.5rem;
   resize: vertical;
   padding: 0.9rem 1rem;
-  font: inherit;
   font-size: 1.1rem;
-  color: var(--ink);
-  background: var(--paper);
-  border: 1.5px solid var(--line);
+  line-height: 1.55;
+  color: var(--lens-ink);
+  background: var(--lens-paper);
+  border: 1.5px solid var(--lens-line);
   border-radius: 10px;
 }
-.composer textarea:focus-visible {
-  border-color: var(--focus);
+.lens-composer textarea:focus-visible {
+  border-color: var(--lens-focus);
   outline-offset: 0;
 }
-.composer-row {
+.lens-composer-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1rem;
   margin-top: 0.75rem;
 }
-.composer button {
-  font: inherit;
+.lens-composer button {
   font-weight: 600;
   padding: 0.6rem 1.4rem;
-  color: var(--paper);
-  background: var(--ink);
+  color: #fff;
+  background: var(--lens-focus);
   border: 0;
   border-radius: 999px;
-  cursor: pointer;
 }
-.composer button:disabled {
+.lens-composer button:disabled {
   opacity: 0.45;
-  cursor: not-allowed;
 }
-.hint {
+.lens-hint {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
 }
 
 /* Examples */
-.examples {
-  margin-top: 2rem;
+.lens-examples {
+  margin-top: 1.75rem;
 }
-.examples p {
-  margin: 0 0 0.5rem;
+.lens-examples-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.lens-examples-head p {
+  margin: 0;
   font-size: 0.9rem;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
 }
-.examples ul {
+.lens-langs {
+  display: inline-flex;
+  border: 1px solid var(--lens-line);
+  border-radius: 999px;
+  padding: 2px;
+  background: var(--lens-paper);
+}
+.lens-langs button {
+  padding: 0.25rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--lens-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+}
+.lens-langs button[aria-pressed='true'] {
+  color: #fff;
+  background: var(--lens-ink);
+}
+.lens-examples ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -83,128 +111,125 @@
   padding: 0;
   list-style: none;
 }
-.example {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5rem;
+.lens-examples li {
+  max-width: 100%;
+}
+.lens-example {
+  display: block;
   max-width: 100%;
   padding: 0.35rem 0.8rem;
-  font: inherit;
+  overflow: hidden;
   font-size: 0.92rem;
   text-align: left;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  cursor: pointer;
-}
-.example:hover {
-  border-color: var(--ink-soft);
-  background: var(--paper);
-}
-.example-script {
-  font-size: 0.75rem;
-  color: var(--ink-soft);
-}
-.example-text {
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 24ch;
+  color: var(--lens-ink);
+  background: transparent;
+  border: 1px solid var(--lens-line);
+  border-radius: 999px;
+}
+.lens-example:hover {
+  border-color: var(--lens-soft);
+  background: var(--lens-paper);
 }
 
 /* Result */
-.error {
-  margin-top: 2.5rem;
+.lens-error {
+  margin-top: 2.25rem;
   padding: 0.9rem 1rem;
-  border-left: 4px solid var(--explicit);
-  background: var(--paper);
+  border-left: 4px solid var(--lens-explicit);
+  background: var(--lens-paper);
 }
-.result {
-  --tone: var(--ink);
-  margin-top: 3rem;
+.lens-result {
+  --tone: var(--lens-ink);
+  margin-top: 2.5rem;
   padding-top: 2rem;
-  border-top: 1.5px solid var(--line);
+  border-top: 1.5px solid var(--lens-line);
 }
-.result.is-explicit { --tone: var(--explicit); }
-.result.is-subtle { --tone: var(--subtle); }
-.result.is-neutral { --tone: var(--neutral); }
+.lens-result.is-explicit { --tone: var(--lens-explicit); }
+.lens-result.is-subtle { --tone: var(--lens-subtle); }
+.lens-result.is-neutral { --tone: var(--lens-neutral); }
 
-.verdict-row {
+.lens-verdict-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.25rem 1.25rem;
 }
-.verdict {
+.lens-verdict {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: 'Anek Bangla', 'Noto Sans Bengali', sans-serif;
   font-variation-settings: 'wdth' 118;
   font-weight: 800;
   font-size: clamp(2.2rem, 7vw, 3.6rem);
   line-height: 1;
+  letter-spacing: 0;
   color: var(--tone);
 }
-.verdict-meta {
+.lens-verdict-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1rem;
   margin: 0;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
+}
+.lens-notice {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  background: var(--lens-paper);
+  border: 1px solid var(--lens-line);
+  border-radius: 8px;
 }
 
 /* The post, re-read: underline thickness = how hard a word pushed the verdict */
-.post {
+.lens-post {
   margin: 1.75rem 0 0.5rem;
   padding: 0;
   font-size: clamp(1.3rem, 3.6vw, 1.7rem);
   line-height: 1.75;
   overflow-wrap: anywhere;
 }
-.post .w.push {
+.lens-w.is-push {
   text-decoration-line: underline;
   text-decoration-color: var(--tone);
   text-underline-offset: 0.28em;
   text-decoration-skip-ink: none;
 }
-.reading-key {
+.lens-key {
   margin: 0 0 2.25rem;
   font-size: 0.9rem;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
 }
-.reading-key q {
-  color: var(--ink);
+.lens-key q {
+  color: var(--lens-ink);
   font-weight: 600;
 }
 
-.result h3 {
+.lens-result h3 {
   margin: 0 0 0.75rem;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 650;
+  font-size: 1.05rem;
 }
 
 /* Probability bars */
-.bars {
+.lens-bars {
   margin: 0 0 2.25rem;
   display: grid;
   gap: 0.4rem;
 }
-.bar-row {
+.lens-bar-row {
   display: grid;
   grid-template-columns: 5.5rem 1fr;
   align-items: center;
 }
-.bar-row dt {
-  font-size: 0.95rem;
-}
-.bar-row dd {
+.lens-bar-row dd {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   margin: 0;
 }
-.bar {
+.lens-bar {
   display: block;
   min-width: 2px;
   height: 0.8rem;
@@ -212,44 +237,58 @@
   background: var(--c);
   transition: width 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.bar-value {
+.lens-bar-value {
   font-variant-numeric: tabular-nums;
   font-size: 0.9rem;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
 }
-.is-explicit { --c: var(--explicit); }
-.is-subtle { --c: var(--subtle); }
-.is-neutral { --c: var(--neutral); }
+.lens .is-explicit { --c: var(--lens-explicit); }
+.lens .is-subtle { --c: var(--lens-subtle); }
+.lens .is-neutral { --c: var(--lens-neutral); }
 
 /* Model votes */
-.table-wrap {
+.lens-table-wrap {
   overflow-x: auto;
 }
-.votes {
+.lens-votes {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
 }
-.votes th,
-.votes td {
+.lens-votes th,
+.lens-votes td {
   padding: 0.5rem 0.75rem 0.5rem 0;
   text-align: left;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--lens-line);
 }
-.votes thead th {
+.lens-votes thead th {
   font-weight: 500;
-  color: var(--ink-soft);
+  color: var(--lens-soft);
 }
-.votes tbody th {
+.lens-votes tbody th {
   font-weight: 500;
 }
-.votes td.is-explicit,
-.votes td.is-subtle,
-.votes td.is-neutral {
+.lens-votes tbody th small {
+  color: var(--lens-soft);
+}
+.lens-votes td[class^='is-'] {
   color: var(--c);
   font-weight: 600;
 }
-.votes .num {
+.lens-votes .num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+.lens-foot {
+  display: grid;
+  gap: 0.25rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.82rem;
+  color: var(--lens-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens-bar {
+    transition: none;
+  }
 }

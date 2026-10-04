@@ -25,12 +25,12 @@ def check():
     if actual != ALLOWED:
         raise ValueError(f"Public data allowlist mismatch: {actual}")
     for name in ("models.json", "calibration.json"):
-        value = json.loads((ROOT / "data" / name).read_text())
+        value = json.loads((ROOT / "data" / name).read_text(encoding="utf-8"))
         scan(value)
         if value["raw_text_included"] is not False or value["class_order"] != [0, 1, 2]:
             raise ValueError("Invalid public contract")
-    models = json.loads((ROOT / "data/models.json").read_text())["models"]
-    calibration = json.loads((ROOT / "data/calibration.json").read_text())
+    models = json.loads((ROOT / "data/models.json").read_text(encoding="utf-8"))["models"]
+    calibration = json.loads((ROOT / "data/calibration.json").read_text(encoding="utf-8"))
     for m in models:
         if sum(m["support"]) != m["rows"]:
             raise ValueError("Support mismatch")
@@ -41,7 +41,7 @@ def check():
             raise ValueError("Offset grid mismatch")
         if abs(grid[10][10] - m["macro_f1"]) > 1e-8:
             raise ValueError("Zero-offset score mismatch")
-    ex = json.loads((ROOT / "data/examples.json").read_text())
+    ex = json.loads((ROOT / "data/examples.json").read_text(encoding="utf-8"))
     if "hand-written" not in ex["provenance"]:
         raise ValueError("Missing example provenance")
     if len({e["id"] for e in ex["examples"]}) != 18:

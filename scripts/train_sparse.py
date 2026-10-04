@@ -53,12 +53,12 @@ def train(data, output):
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(bundle, output)
-    from backend.inference import SparsePredictor
+    from backend.app.predictors import TfidfPredictor
 
-    reloaded = SparsePredictor(output)
+    reloaded = TfidfPredictor.from_file(output)
     for text in samples:
-        vote = reloaded.predict(text)
-        if abs(sum(vote["probs"]) - 1) > 1e-6:
+        probs = reloaded.predict_proba([normalize(text)])[0]
+        if abs(sum(probs) - 1) > 1e-6:
             raise ValueError("Reload verification failed")
     (output.parent / "sparse_metadata.json").write_text(
         json.dumps(bundle["metadata"], indent=2) + "\n"

@@ -25,7 +25,7 @@ source .venv/bin/activate
 pip install -r backend/requirements-dev.txt
 npm ci
 npm run build
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
 Open **http://127.0.0.1:7860**. FastAPI serves the production UI and API together. `/api/health` lists the actual served models; `/docs` exposes the API schema.
@@ -36,7 +36,7 @@ For frontend development, run the API on port 8000 in one terminal and Vite in a
 
 ```bash
 # Terminal 1, with .venv activated
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --no-proxy-headers
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-proxy-headers
 # Terminal 2
 npm run dev
 ```
@@ -50,7 +50,7 @@ Use only trusted local competition data. The fitted artifact is ignored by Git a
 ```bash
 source .venv/bin/activate
 python scripts/train_sparse.py --train /absolute/path/to/train.csv
-SPARSE_MODEL_PATH=model/sparse.joblib python -m uvicorn backend.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
+SPARSE_MODEL_PATH=model/sparse.joblib python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
 In this workspace, the fit is already saved at `model/sparse.joblib` and covers all 47,817 training rows. A fresh clone must run the training command to obtain it. This full-data fit is distinct from the historical five-fold V0.0 model; do not assign the historical score to its live predictions. Joblib loads are for trusted operator-selected artifacts only; there is no artifact-upload endpoint.
@@ -77,7 +77,7 @@ Local setup only. Bind both API and Vite to **127.0.0.1**, keep proxy-header tru
 ```bash
 python scripts/export_results.py --workspace /absolute/path/to/datathon-workspace --private
 ENABLE_PRIVATE_CASES=1 PUBLIC_DEPLOYMENT=0 SPARSE_MODEL_PATH=model/sparse.joblib \
-  python -m uvicorn backend.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
+  python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
 `private/hard_cases.json` contains up to 40 posts per collection and stays ignored. “All wrong” requires every covered member and the ensemble to be wrong. “LLM only” requires Qwen to be correct and all covered non-LLM members to be wrong; the ensemble is displayed but is not a member in that selection. Missing specialist votes appear as N/A. The endpoint checks actual socket loopback, the explicit flag and public-deployment mode. Spoofed `X-Forwarded-For` cannot grant access. Never share private screenshots or videos.
@@ -95,7 +95,7 @@ python scripts/train_transformer.py --train /absolute/path/to/train.csv \
 python scripts/export_cpu.py --model model/transformer \
   --validation model/transformer/heldout.csv --output model/transformer-int8
 TRANSFORMER_MODEL_PATH=model/transformer-int8 SPARSE_MODEL_PATH=model/sparse.joblib \
-  python -m uvicorn backend.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
+  python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 7860 --no-proxy-headers
 ```
 
 `--download-base` allows fetching a base model when explicitly selected; the default requires local files. `--full-fit` trains all supplied rows and reports no held-out score. The recipe uses three-class cross-entropy at 256 tokens, LR 2e-5 and duplicate-grouped validation; it is not an exact historical V1.x recipe replay. Artifacts declare class order in `showcase.json`. Int8 export rejects overlapping validation text and a macro-F1 drop ≥0.005, measures latency, and checks every validation decision after reload. A full-fit model requires separately reserved unseen validation data for this quality check. Public deployment of these weights awaits organizer permission.

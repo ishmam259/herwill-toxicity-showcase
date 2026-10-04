@@ -9,13 +9,13 @@ try {
     viewport: { width: 1440, height: 1100 },
   });
   await page.goto(base);
-  await page.getByText("Classifier online", { exact: true }).waitFor();
+  await page.getByLabel("Post to check").waitFor();
   await page.screenshot({
     path: "output/live-demo-desktop.png",
     fullPage: true,
   });
-  await page.getByRole("button", { name: "Analyze post" }).click();
-  await page.getByRole("heading", { name: "Signals in the words" }).waitFor();
+  await page.locator(".lens-example").first().click();
+  await page.getByRole("heading", { name: "What each model says" }).waitFor();
   await page.screenshot({
     path: "output/prediction-desktop.png",
     fullPage: true,
@@ -27,7 +27,7 @@ try {
   });
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto(base);
-  await page.getByText("Classifier online", { exact: true }).waitFor();
+  await page.getByLabel("Post to check").waitFor();
   await page.screenshot({
     path: "output/live-demo-mobile.png",
     fullPage: true,

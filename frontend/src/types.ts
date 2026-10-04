@@ -1,23 +1,5 @@
 export const labels = ["Explicit", "Subtle", "Neutral"] as const;
 export const classColors = ["#ae3d45", "#9c6b17", "#287767"];
-export type Vote = {
-  id: string;
-  name: string;
-  label: number;
-  probs: number[];
-  mode: string;
-  has_features: boolean;
-};
-export type Prediction = {
-  script: { id: string; name: string; note: string };
-  models: Vote[];
-  tokens: { text: string; weight: number }[];
-  explanation: string;
-  explanation_model: string;
-  explanation_truncated: boolean;
-  latency_ms: number;
-  warning: string | null;
-};
 export type Health = {
   status: string;
   models: { id: string; name: string; mode: string }[];
@@ -94,26 +76,4 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
     );
   }
   return response.json() as Promise<T>;
-}
-export function validPrediction(value: Prediction) {
-  return (
-    value &&
-    typeof value.script?.name === "string" &&
-    Array.isArray(value.models) &&
-    value.models.length > 0 &&
-    value.models.every(
-      (m) =>
-        Number.isInteger(m.label) &&
-        m.label >= 0 &&
-        m.label <= 2 &&
-        Array.isArray(m.probs) &&
-        m.probs.length === 3 &&
-        m.probs.every((p) => Number.isFinite(p) && p >= 0 && p <= 1) &&
-        Math.abs(m.probs.reduce((a, b) => a + b, 0) - 1) < 1e-4,
-    ) &&
-    Array.isArray(value.tokens) &&
-    value.tokens.every(
-      (t) => typeof t.text === "string" && Number.isFinite(t.weight),
-    )
-  );
 }
